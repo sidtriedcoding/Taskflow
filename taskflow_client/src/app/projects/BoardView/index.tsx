@@ -202,4 +202,6 @@ const TaskCard = ({ task }: TaskCardProps) => {
   );
 };
 
+
+
 export default BoardView;
