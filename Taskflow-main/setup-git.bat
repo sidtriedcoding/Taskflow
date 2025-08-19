@@ -17,7 +17,7 @@ git --version
 echo.
 
 REM Navigate to project directory
-cd /d "D:\sidu\Taskflow-main (1)\Taskflow-main"
+cd /d "%~dp0"
 
 REM Initialize Git repository if not already initialized
 if not exist ".git" (
@@ -42,7 +42,7 @@ echo.
 
 REM Create initial commit
 echo Creating initial commit...
-git commit -m "Initial commit: TaskFlow project with priority filtering fixes"
+git commit -m "Initial commit: TaskFlow project setup"
 echo.
 
 REM Instructions for connecting to GitHub
