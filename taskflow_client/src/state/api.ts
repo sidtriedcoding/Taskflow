@@ -41,6 +41,7 @@ export interface Attachment {
 }
 
 export interface Task {
+  comments: any;
   id: number;
   title: string;
   description?: string;
@@ -135,4 +136,5 @@ export const {
   useCreateProjectMutation,
   useGetTasksQuery,
   useCreateTaskMutation,
+  useUpdateTaskStatusMutation
 } = api;

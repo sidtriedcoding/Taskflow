@@ -21,4 +21,3 @@ const Header = ({name, buttonComponent, isSmallText = false }: Props) => {
 
 export default Header;
 
-// video ended on 9th August at 3:16:50

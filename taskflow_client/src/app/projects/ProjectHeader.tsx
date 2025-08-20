@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import Header from '@/src/components/Header';
+import Header from '@/components/Header';
 import { Clock, Filter, Grid3x3, List, Share2, Table } from 'lucide-react';
 
 type ProjectHeaderProps = {
@@ -91,5 +91,3 @@ const TabButton = ({ name, icon, setActiveTab, activeTab }: TabButtonProps) => {
 };
 
 export default ProjectHeader;
-
-

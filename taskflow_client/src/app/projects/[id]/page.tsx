@@ -3,7 +3,7 @@
 import React, { use, useState } from 'react';
 import ProjectHeader from '../ProjectHeader';
 import BoardView from '../BoardView';
-import { useGetProjectsQuery } from '@/src/state';
+import { useGetProjectsQuery } from '@/state';
 
 type Props = {
   params: Promise<{
@@ -35,5 +35,3 @@ const Project = ({ params }: Props) => {
 };
 
 export default Project;
-
-
