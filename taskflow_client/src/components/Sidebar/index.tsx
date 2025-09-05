@@ -52,7 +52,7 @@ const priorityItems: NavItem[] = [
   { name: 'High', icon: Shield, href: '/priority/high' },
   { name: 'Medium', icon: Shield, href: '/priority/medium' },
   { name: 'Low', icon: Shield, href: '/priority/low' },
-  { name: 'Backlog', icon: Layers, href: '/backlog' },
+  { name: 'Backlog', icon: Layers, href: '/priority/backlog' },
 ];
 
 // SidebarLink component
@@ -71,20 +71,17 @@ const SidebarLink = ({
 }) => (
   <Link
     href={href}
-    className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
-      isCollapsed ? 'justify-center' : ''
-    } ${
-      isActive
+    className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${isCollapsed ? 'justify-center' : ''
+      } ${isActive
         ? 'border-r-2 border-blue-600 bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400'
         : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
-    }`}
+      }`}
   >
     <Icon
-      className={`h-5 w-5 flex-shrink-0 ${
-        isActive
-          ? 'text-blue-600 dark:text-blue-400'
-          : 'text-gray-500 dark:text-gray-400'
-      }`}
+      className={`h-5 w-5 flex-shrink-0 ${isActive
+        ? 'text-blue-600 dark:text-blue-400'
+        : 'text-gray-500 dark:text-gray-400'
+        }`}
     />
     {!isCollapsed && <span className="truncate">{label}</span>}
   </Link>
@@ -114,18 +111,12 @@ const Sidebar = ({
     refetchOnReconnect: true, // Refetch when connection is restored
   });
 
-  // Debug logging
+  // Debug logging - simplified to prevent excessive re-renders
   React.useEffect(() => {
-    console.log('=== PROJECTS DEBUG ===');
-    console.log('Projects data:', projects);
-    console.log('Projects error:', projectsError);
-    console.log('Is loading:', isLoadingProjects);
-    console.log('Is fetching:', isRefreshing);
-    console.log('Mounted:', mounted);
     if (projectsError) {
-      console.log('Error details:', JSON.stringify(projectsError, null, 2));
+      console.log('❌ Projects Error:', projectsError);
     }
-  }, [projects, projectsError, isLoadingProjects, isRefreshing, mounted]);
+  }, [projectsError]);
 
   // Manual refresh function
   const refreshProjects = () => {
@@ -139,20 +130,17 @@ const Sidebar = ({
   const NavItem = ({ item, isActive = false, isCollapsed }: NavItemProps) => (
     <Link
       href={item.href}
-      className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
-        isCollapsed ? 'justify-center' : ''
-      } ${
-        isActive
+      className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${isCollapsed ? 'justify-center' : ''
+        } ${isActive
           ? 'bg-gray-100 text-blue-600 dark:bg-gray-800 dark:text-blue-500'
           : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
-      }`}
+        }`}
     >
       <item.icon
-        className={`h-5 w-5 flex-shrink-0 ${
-          isActive
-            ? 'text-blue-600 dark:text-blue-500'
-            : 'text-gray-500 dark:text-gray-400'
-        }`}
+        className={`h-5 w-5 flex-shrink-0 ${isActive
+          ? 'text-blue-600 dark:text-blue-500'
+          : 'text-gray-500 dark:text-gray-400'
+          }`}
       />
       {!isCollapsed && <span className="truncate">{item.name}</span>}
     </Link>

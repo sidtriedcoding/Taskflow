@@ -1,4 +1,4 @@
-import { useGetTasksQuery, useUpdateTaskStatusMutation } from '@/state/api';
+import { useGetTasksQuery, useUpdateTaskStatusMutation, Status } from '@/state/api';
 import React from 'react';
 import { DndProvider, useDrag, useDrop, DropTargetMonitor, DragSourceMonitor } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -23,7 +23,7 @@ const BoardView = ({ id, setIsModalNewTaskOpen }: BoardProps) => {
   const [updateTaskStatus] = useUpdateTaskStatusMutation();
 
   const moveTask = (taskId: number, toStatus: string) => {
-    updateTaskStatus({ taskId, status: toStatus });
+    updateTaskStatus({ taskId, status: toStatus as Status });
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -78,7 +78,7 @@ const TaskColumn = ({
 
   return (
     <div
-      ref={drop}
+      ref={drop as any}
       className={`py-2 xl:px-2 xl:py-4 rounded-lg ${isOver ? 'bg-blue-100 dark:bg-neutral-950' : ''}`}
     >
       <div className="mb-3 flex w-full">
@@ -145,17 +145,16 @@ const Task = ({ task }: TaskProps) => {
 
   const PriorityTag = ({ priority }: { priority: TaskType['priority'] }) => (
     <div
-      className={`rounded-full px-2 py-1 text-xs font-semibold ${
-        priority === 'Urgent'
-          ? 'bg-red-200 text-red-700'
-          : priority === 'High'
-            ? 'bg-yellow-200 text-yellow-700'
-            : priority === 'Medium'
-              ? 'bg-green-200 text-green-700'
-              : priority === 'Low'
-                ? 'bg-blue-200 text-blue-700'
-                : 'bg-gray-200 text-gray-700'
-      }`}
+      className={`rounded-full px-2 py-1 text-xs font-semibold ${priority === 'Urgent'
+        ? 'bg-red-200 text-red-700'
+        : priority === 'High'
+          ? 'bg-yellow-200 text-yellow-700'
+          : priority === 'Medium'
+            ? 'bg-green-200 text-green-700'
+            : priority === 'Low'
+              ? 'bg-blue-200 text-blue-700'
+              : 'bg-gray-200 text-gray-700'
+        }`}
     >
       {priority}
     </div>
@@ -163,10 +162,9 @@ const Task = ({ task }: TaskProps) => {
 
   return (
     <div
-      ref={drag}
-      className={`mb-4 rounded-md bg-white shadow dark:bg-dark-secondary ${
-        isDragging ? 'opacity-50' : 'opacity-100'
-      }`}
+      ref={drag as any}
+      className={`mb-4 rounded-md bg-white shadow dark:bg-dark-secondary ${isDragging ? 'opacity-50' : 'opacity-100'
+        }`}
     >
       {task.attachments && task.attachments.length > 0 && (
         <Image
@@ -182,7 +180,7 @@ const Task = ({ task }: TaskProps) => {
           <div className="flex flex-1 flex-wrap items-center gap-2">
             {task.priority && <PriorityTag priority={task.priority} />}
             <div className="flex gap-2">
-              {taskTagsSplit.map((tag, index) => (
+              {taskTagsSplit.map((tag: string, index: number) => (
                 <div
                   key={`${task.id}-${tag}-${index}`}
                   className="rounded-full bg-blue-100 px-2 py-1 text-xs"

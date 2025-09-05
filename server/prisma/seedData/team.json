@@ -1,27 +1,27 @@
 [
   {
+    "id": 1,
     "teamName": "Quantum Innovations",
-    "productOwnerUserId": 11,
-    "projectManagerUserId": 2
+    "productOwnerUserId": null
   },
   {
+    "id": 2,
     "teamName": "Nebula Research",
-    "productOwnerUserId": 13,
-    "projectManagerUserId": 4
+    "productOwnerUserId": null
   },
   {
+    "id": 3,
     "teamName": "Orion Solutions",
-    "productOwnerUserId": 15,
-    "projectManagerUserId": 6
+    "productOwnerUserId": null
   },
   {
+    "id": 4,
     "teamName": "Krypton Developments",
-    "productOwnerUserId": 17,
-    "projectManagerUserId": 8
+    "productOwnerUserId": null
   },
   {
+    "id": 5,
     "teamName": "Zenith Technologies",
-    "productOwnerUserId": 19,
-    "projectManagerUserId": 10
+    "productOwnerUserId": null
   }
 ]

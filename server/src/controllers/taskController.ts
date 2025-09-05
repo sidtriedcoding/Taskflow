@@ -3,13 +3,11 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// This function was already correct, but is included for completeness.
 export const getTasks = async (req: Request, res: Response): Promise<void> => {
   const { projectId } = req.query;
   try {
     const tasks = await prisma.task.findMany({
       where: {
-        // Ensure projectId is a number before querying
         projectId: projectId ? Number(projectId) : undefined,
       },
       include: {
@@ -27,11 +25,17 @@ export const getTasks = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-// This is the new, corrected function for creating tasks.
 export const createTask = async (
   req: Request,
   res: Response
 ): Promise<void> => {
+  // --- START OF DEBUGGING LOGS ---
+  // These logs will show us exactly what the backend is receiving.
+  console.log("--- RECEIVED NEW TASK REQUEST ---");
+  console.log("Request Body Received:", req.body);
+  console.log("Content-Type Header:", req.headers['content-type']);
+  // --- END OF DEBUGGING LOGS ---
+
   const {
     title,
     description,
@@ -46,11 +50,11 @@ export const createTask = async (
     assignedUserId,
   } = req.body;
 
-  // --- Start of Validation ---
-  if (!title || !priority || !tags || !projectId || !authorUserId) {
+  // --- START OF ROBUST VALIDATION ---
+  if (!title || !priority || !projectId || !authorUserId) {
     res.status(400).json({
       message:
-        "Missing required fields: title, priority, tags, projectId, authorUserId.",
+        "Missing required fields. Required: title, priority, projectId, authorUserId.",
     });
     return;
   }
@@ -68,7 +72,7 @@ export const createTask = async (
     });
     return;
   }
-  // --- End of Validation ---
+  // --- END OF ROBUST VALIDATION ---
 
   try {
     // Build the data object for Prisma
@@ -77,7 +81,7 @@ export const createTask = async (
       description,
       status,
       priority,
-      tags,
+      tags, // Tags can be an empty string if not provided
       points,
       startDate: startDate ? new Date(startDate) : null,
       dueDate: dueDate ? new Date(dueDate) : null,
@@ -93,6 +97,7 @@ export const createTask = async (
     const newTask = await prisma.task.create({ data: taskData });
     res.status(201).json(newTask);
   } catch (error: any) {
+    console.error("Prisma Error:", error); // Log the detailed prisma error
     res.status(500).json({ message: `Error creating task: ${error.message}` });
   }
 };
@@ -104,7 +109,7 @@ export const updateTaskStatus = async (
   const { taskId } = req.params;
   const { status } = req.body;
   try {
-    const updateTask = await prisma.task.update({
+    const updatedTask = await prisma.task.update({
       where: {
         id: Number(taskId),
       },
@@ -112,8 +117,8 @@ export const updateTaskStatus = async (
         status: status,
       },
     });
-    res.json(updateTask);
+    res.json(updatedTask);
   } catch (error: any) {
-    res.status(500).json({ message: `Error updating tasks: ${error.message}` });
+    res.status(500).json({ message: `Error updating task status: ${error.message}` });
   }
 };

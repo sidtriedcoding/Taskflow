@@ -16,15 +16,18 @@ model User {
   userId            Int     @id @default(autoincrement())
   username          String  @unique
   cognitoId         String  @unique
+  email             String  @unique // FIX: Added the essential 'email' field
   profilePictureUrl String?
   teamId            Int?
 
   authoredTasks  Task[]           @relation("TaskAuthor")
-  assignedTasks  Task[]           @relation("TaskAssignee")
+  assignedTasks  Task[]           @relation("TaskAssignoee")
   taskAssignment TaskAssignment[]
   attachments    Attachment[]
   comments       Comment[]
   team           Team?            @relation(fields: [teamId], references: [id])
+
+  Task Task[] @relation("TaskAssignee")
 }
 
 model Team {
@@ -77,6 +80,8 @@ model Task {
   comments       Comment[]
   team           Team?            @relation("TeamTasks", fields: [teamId], references: [id])
   Team           Team[]           @relation("TeamProjectTasks")
+
+  User User[] @relation("TaskAssignoee")
 }
 
 model TaskAssignment {

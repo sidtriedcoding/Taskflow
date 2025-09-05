@@ -23,12 +23,11 @@ export const createProject = async (
 ): Promise<void> => {
   const { name, description, startDate, endDate } = req.body;
 
-  // --- Start of Changes ---
-
-  // Basic Validation: Check if required fields are provided.
+  // --- START OF ROBUST VALIDATION ---
   if (!name || !startDate || !endDate) {
     res.status(400).json({
-      message: "Missing required fields: name, startDate, and endDate.",
+      message:
+        "Missing required fields. Required: name, startDate, and endDate.",
     });
     return;
   }
@@ -36,26 +35,27 @@ export const createProject = async (
   const parsedStartDate = new Date(startDate);
   const parsedEndDate = new Date(endDate);
 
-  // Date Validation: Check if the provided date strings are valid.
   if (isNaN(parsedStartDate.getTime()) || isNaN(parsedEndDate.getTime())) {
     res.status(400).json({
       message:
-        "Invalid date format for startDate or endDate. Please use a valid ISO date string (e.g., '2024-12-31T00:00:00.000Z').",
+        "Invalid date format. Please use a valid ISO date string (e.g., '2024-12-31T00:00:00.000Z').",
     });
     return;
-}
+  }
+  // --- END OF ROBUST VALIDATION ---
+
   try {
     const newProject = await prisma.project.create({
       data: {
         teamname: name, // Correctly maps incoming 'name' to schema's 'teamname'
         description,
-        startDate: new Date(startDate), // Use the validated start date
-        endDate: new Date(endDate), // Use the validated end date
+        startDate: parsedStartDate,
+        endDate: parsedEndDate,
       },
     });
     res.status(201).json(newProject);
   } catch (error: any) {
-    // This will catch any other database-level errors
+    console.error("Prisma Error:", error);
     res
       .status(500)
       .json({ message: `Error creating project: ${error.message}` });

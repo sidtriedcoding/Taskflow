@@ -1,11 +1,17 @@
 'use client';
+
+import { useRef } from 'react';
 import { Provider } from 'react-redux';
-import { store } from '../state';
+import { store } from './store'; // Make sure this path is correct
 
 export default function StoreProvider({
-    children,
+  children,
 }: {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-    return <Provider store={store}>{children}</Provider>;
+  // The store is created only once
+  const storeRef = useRef(store);
+
+  return <Provider store={storeRef.current}>{children}</Provider>;
 }
+// This component wraps your application with the Redux Provider

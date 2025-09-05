@@ -32,6 +32,15 @@ export interface User {
   teamId?: number;
 }
 
+export interface Team {
+  id: number;
+  teamname: string;
+  productOwnerUserId?: number;
+  productOwnerUsername?: string;
+  userCount: number;
+  users?: User[];
+}
+
 export interface Attachment {
   id: number;
   fileURL: string;
@@ -40,68 +49,81 @@ export interface Attachment {
   uploadedById: number;
 }
 
+export interface Comment {
+  id: number;
+  text: string;
+  taskId: number;
+  userId: number;
+  user?: User;
+}
+
 export interface Task {
-  comments: any;
+  comments: Comment[];
   id: number;
   title: string;
   description?: string;
   status?: string;
   priority?: string;
-  tags?: string[];
+  tags?: string;
   startDate?: string;
   dueDate?: string;
   points?: number;
   projectId: number;
   authorUserId?: number;
   assignedUserId?: number;
+  attachments?: Attachment[];
+  assignee?: User;
+  author?: User;
+}
+
+export interface SearchResults {
+  projects?: Project[];
+  tasks?: Task[];
+  users?: User[];
+}
+
+interface CreateProjectArgs {
+  teamname: string;
+  description?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8000/api', // Temporarily hardcoded for debugging
+    baseUrl:
+      process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api',
     prepareHeaders: (headers) => {
       headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
       headers.set('Pragma', 'no-cache');
       headers.set('Expires', '0');
-      console.log('🚀 API Request Headers:', headers);
-      console.log('🌐 API Base URL:', 'http://localhost:8000/api');
       return headers;
     },
   }),
   reducerPath: 'api',
-  tagTypes: ['Projects', 'Tasks'],
+  tagTypes: ['Projects', 'Tasks', 'Users', 'Teams'],
   endpoints: (build) => ({
     getProjects: build.query<Project[], void>({
-      query: () => {
-        const url = `projects?t=${Date.now()}`;
-        console.log('📡 Making API request to:', url);
-        return url;
-      },
+      query: () => 'projects',
       providesTags: ['Projects'],
-      transformResponse: (response: any, meta, arg) => {
-        console.log('✅ API Response received:', response);
-        console.log('📊 Response meta:', meta);
+      transformResponse: (response: Project[]) => {
         return response;
       },
-      transformErrorResponse: (response: any, meta, arg) => {
-        console.log('❌ API Error:', response);
-        console.log('📊 Error meta:', meta);
+      transformErrorResponse: (response: { status: number; data: unknown }) => {
         return response;
       },
     }),
-    createProject: build.mutation<Project, Partial<Project>>({
-      query: (project) => ({
+
+    createProject: build.mutation<Project, CreateProjectArgs>({
+      query: (newProject) => ({
         url: 'projects',
         method: 'POST',
-        body: {
-          name: project.teamname, // Map teamname to name for API
-          description: project.description,
-          startDate: project.startDate,
-          endDate: project.endDate,
-        },
+        body: newProject, // Pass the newProject object directly as the body
       }),
-      invalidatesTags: [{ type: 'Projects', id: undefined }],
+
+      invalidatesTags: ['Projects'],
     }),
+
     getTasks: build.query<Task[], { projectId: number }>({
       query: ({ projectId }) => `tasks?projectId=${projectId}`,
       providesTags: (result) =>
@@ -117,7 +139,7 @@ export const api = createApi({
       }),
       invalidatesTags: ['Tasks'],
     }),
-    //This is to update an individual task status at a time 
+    //This is to update an individual task status at a time
     updateTaskStatus: build.mutation<Task, { taskId: number; status: Status }>({
       query: ({ taskId, status }) => ({
         url: `tasks/${taskId}/status`,
@@ -128,6 +150,17 @@ export const api = createApi({
         { type: 'Tasks', id: taskId },
       ],
     }),
+    getUsers: build.query<User[], void>({
+      query: () => 'users',
+      providesTags: ['Users'],
+    }),
+    getTeams: build.query<Team[], void>({
+      query: () => 'teams',
+      providesTags: ['Teams'],
+    }),
+    search: build.query<SearchResults, string>({
+      query: (query) => `search?query=${query}`,
+    }),
   }),
 });
 
@@ -136,5 +169,8 @@ export const {
   useCreateProjectMutation,
   useGetTasksQuery,
   useCreateTaskMutation,
-  useUpdateTaskStatusMutation
+  useUpdateTaskStatusMutation,
+  useSearchQuery,
+  useGetUsersQuery,
+  useGetTeamsQuery,
 } = api;
