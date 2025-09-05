@@ -66,8 +66,8 @@ app.use("/tasks", taskRoutes);
 app.use("/teams", teamRoutes);
 
 // SERVER
-const port = process.env.PORT || 8000;
-app.listen(port, () => {
+const port = Number(process.env.PORT) || 8000;
+app.listen(port, "0.0.0.0", () => {
   console.log(`TaskFlow Server is running on port ${port}`);
   console.log(`API endpoints available at:`);
   console.log(`  - GET /api/projects`);
