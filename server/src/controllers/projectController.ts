@@ -21,13 +21,13 @@ export const createProject = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { name, description, startDate, endDate } = req.body;
+  const { teamname, description, startDate, endDate } = req.body;
 
   // --- START OF ROBUST VALIDATION ---
-  if (!name || !startDate || !endDate) {
+  if (!teamname || !startDate || !endDate) {
     res.status(400).json({
       message:
-        "Missing required fields. Required: name, startDate, and endDate.",
+        "Missing required fields. Required: teamname, startDate, and endDate.",
     });
     return;
   }
@@ -47,7 +47,7 @@ export const createProject = async (
   try {
     const newProject = await prisma.project.create({
       data: {
-        teamname: name, // Correctly maps incoming 'name' to schema's 'teamname'
+        teamname: teamname, // Use teamname directly from request body
         description,
         startDate: parsedStartDate,
         endDate: parsedEndDate,

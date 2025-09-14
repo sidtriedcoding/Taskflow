@@ -92,7 +92,7 @@ interface CreateProjectArgs {
 export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl:
-      process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api',
+      process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:80/api',
     prepareHeaders: (headers) => {
       headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
       headers.set('Pragma', 'no-cache');
@@ -124,8 +124,8 @@ export const api = createApi({
       invalidatesTags: ['Projects'],
     }),
 
-    getTasks: build.query<Task[], { projectId: number }>({
-      query: ({ projectId }) => `tasks?projectId=${projectId}`,
+    getTasks: build.query<Task[], { projectId?: number }>({
+      query: ({ projectId }) => projectId ? `tasks?projectId=${projectId}` : 'tasks',
       providesTags: (result) =>
         result
           ? result.map(({ id }) => ({ type: 'Tasks', id }))

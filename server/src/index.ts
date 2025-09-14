@@ -63,10 +63,11 @@ app.use("/search", searchRoutes);
 // Legacy routes for backward compatibility
 app.use("/projects", projectRoutes);
 app.use("/tasks", taskRoutes);
+app.use("/users", userRoutes);
 app.use("/teams", teamRoutes);
 
 // SERVER
-const port = Number(process.env.PORT) || 8000;
+const port = Number(process.env.PORT) || 80;
 app.listen(port, "0.0.0.0", () => {
   console.log(`TaskFlow Server is running on port ${port}`);
   console.log(`API endpoints available at:`);

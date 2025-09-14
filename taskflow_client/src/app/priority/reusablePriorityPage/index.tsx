@@ -180,7 +180,7 @@ const ReusablePriorityPage = ({ priority }: Props) => {
     data: tasks,
     isLoading,
     isError: isTasksError,
-  } = useGetTasksQuery({ projectId: 1 });
+  } = useGetTasksQuery({ projectId: undefined }); // Fetch all tasks from all projects
 
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
@@ -209,21 +209,19 @@ const ReusablePriorityPage = ({ priority }: Props) => {
       </div>
       <div className="mb-6 flex items-center gap-2 rounded-lg bg-white p-2 shadow-sm dark:bg-gray-800">
         <button
-          className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-            view === 'list'
-              ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white'
-              : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
-          }`}
+          className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'list'
+            ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white'
+            : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+            }`}
           onClick={() => setView('list')}
         >
           List View
         </button>
         <button
-          className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-            view === 'table'
-              ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white'
-              : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
-          }`}
+          className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${view === 'table'
+            ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white'
+            : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+            }`}
           onClick={() => setView('table')}
         >
           Table View

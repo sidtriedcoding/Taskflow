@@ -88,8 +88,8 @@ const taskColumns: GridColDef[] = [
     renderHeader: () => (
       <span className="font-semibold text-gray-600 dark:text-gray-300">Due Date</span>
     ),
-    valueFormatter: (params: { value: string | null }) => {
-      if (!params.value) return '';
+    valueFormatter: (params: { value: string | null } | null) => {
+      if (!params || !params.value) return '';
       return new Date(params.value).toLocaleDateString();
     },
   },

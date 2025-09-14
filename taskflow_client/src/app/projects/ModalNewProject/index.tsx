@@ -18,14 +18,25 @@ const ModalNewProject = ({ isOpen, onClose }: Props) => {
   const handleSubmit = async () => {
     if (!projectName || !startDate || !endDate) return;
 
+    try {
+      // Use the 'teamname' key to match what the backend endpoint requires.
+      await createProject({
+        teamname: projectName,
+        description,
+        startDate,
+        endDate,
+      }).unwrap();
 
-    // Use the 'teamname' key to match what the backend endpoint requires.
-    await createProject({
-      teamname: projectName,
-      description,
-      startDate,
-      endDate,
-    });
+      // Reset form and close modal on success
+      setProjectName('');
+      setDescription('');
+      setStartDate('');
+      setEndDate('');
+      onClose();
+    } catch (error) {
+      console.error('Failed to create project:', error);
+      // You could add error handling here (toast, alert, etc.)
+    }
   };
 
   const isFormValid = () => {
