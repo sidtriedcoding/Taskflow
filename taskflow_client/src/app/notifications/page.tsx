@@ -16,7 +16,7 @@ import {
     Filter,
     X,
     MessageSquare,
-    Task,
+    ClipboardList,
     FolderOpen,
     Users,
     Clock
@@ -74,20 +74,20 @@ const Notifications = () => {
         }
     };
 
-    const getNotificationIcon = (type: string) => {
-        switch (type) {
-            case 'task_update':
-                return <Task className="h-5 w-5 text-blue-500" />;
-            case 'project_update':
-                return <FolderOpen className="h-5 w-5 text-green-500" />;
-            case 'comment':
-                return <MessageSquare className="h-5 w-5 text-purple-500" />;
-            case 'team_update':
-                return <Users className="h-5 w-5 text-orange-500" />;
-            default:
-                return <Bell className="h-5 w-5 text-gray-500" />;
-        }
-    };
+  const getNotificationIcon = (type: string) => {
+    switch (type) {
+      case 'task_update':
+        return <ClipboardList className="h-5 w-5 text-blue-500" />;
+      case 'project_update':
+        return <FolderOpen className="h-5 w-5 text-green-500" />;
+      case 'comment':
+        return <MessageSquare className="h-5 w-5 text-purple-500" />;
+      case 'team_update':
+        return <Users className="h-5 w-5 text-orange-500" />;
+      default:
+        return <Bell className="h-5 w-5 text-gray-500" />;
+    }
+  };
 
     const getNotificationTypeLabel = (type: string) => {
         switch (type) {
@@ -136,8 +136,8 @@ const Notifications = () => {
                     <button
                         onClick={() => setShowFilters(!showFilters)}
                         className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium ${showFilters
-                                ? 'border-blue-500 bg-blue-50 text-blue-600 dark:border-blue-400 dark:bg-blue-900/20 dark:text-blue-400'
-                                : 'border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700'
+                            ? 'border-blue-500 bg-blue-50 text-blue-600 dark:border-blue-400 dark:bg-blue-900/20 dark:text-blue-400'
+                            : 'border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700'
                             }`}
                     >
                         <Filter size={16} />

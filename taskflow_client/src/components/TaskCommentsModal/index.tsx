@@ -13,7 +13,7 @@ interface TaskCommentsModalProps {
 
 const TaskCommentsModal = ({ isOpen, onClose, task }: TaskCommentsModalProps) => {
     const [newComment, setNewComment] = useState('');
-    
+
     const { data: comments = [], isLoading } = useGetCommentsQuery({ taskId: task.id });
     const [createComment] = useCreateCommentMutation();
 
