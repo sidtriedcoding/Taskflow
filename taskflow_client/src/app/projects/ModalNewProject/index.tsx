@@ -20,12 +20,14 @@ const ModalNewProject = ({ isOpen, onClose }: Props) => {
 
     try {
       // Use the 'teamname' key to match what the backend endpoint requires.
-      await createProject({
+      const result = await createProject({
         teamname: projectName,
         description,
-        startDate,
-        endDate,
+        startDate: new Date(startDate).toISOString(),
+        endDate: new Date(endDate).toISOString(),
       }).unwrap();
+
+      console.log('Project created successfully:', result);
 
       // Reset form and close modal on success
       setProjectName('');
@@ -33,9 +35,14 @@ const ModalNewProject = ({ isOpen, onClose }: Props) => {
       setStartDate('');
       setEndDate('');
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to create project:', error);
-      // You could add error handling here (toast, alert, etc.)
+      console.error('Error details:', {
+        status: error.status,
+        data: error.data,
+        message: error.message,
+      });
+      alert(`Failed to create project: ${error.data?.message || error.message || 'Unknown error'}`);
     }
   };
 

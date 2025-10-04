@@ -100,6 +100,25 @@ async function main() {
       );
     }
   }
+
+  // Reset SQLite autoincrement sequences after seeding with explicit IDs
+  try {
+    await prisma.$executeRawUnsafe(
+      `UPDATE sqlite_sequence SET seq = (SELECT MAX(id) FROM Team) WHERE name = 'Team'`
+    );
+    await prisma.$executeRawUnsafe(
+      `UPDATE sqlite_sequence SET seq = (SELECT MAX(id) FROM Project) WHERE name = 'Project'`
+    );
+    await prisma.$executeRawUnsafe(
+      `UPDATE sqlite_sequence SET seq = (SELECT MAX(userId) FROM User) WHERE name = 'User'`
+    );
+    await prisma.$executeRawUnsafe(
+      `UPDATE sqlite_sequence SET seq = (SELECT MAX(id) FROM Task) WHERE name = 'Task'`
+    );
+    console.log("✅ Reset autoincrement sequences for SQLite");
+  } catch (error) {
+    console.log("⚠️  Could not reset sequences (might be PostgreSQL):", error);
+  }
 }
 
 main()
