@@ -301,17 +301,19 @@ const TableView = ({ id, setIsModalNewTaskOpen }: Props) => {
         />
       </div>
 
-      <div className="mt-4 rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+      <div className="mt-4 rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-dark-secondary">
         <DataGrid
           rows={tasks || []}
           columns={columns(handleStatusChange)}
           getRowHeight={() => 'auto'}
           sx={{
             ...dataGridSxStyles(isDarkMode),
+            backgroundColor: isDarkMode ? '#1a1a1a' : '#ffffff',
             '& .MuiDataGrid-cell': {
               padding: '12px 8px',
               display: 'flex',
               alignItems: 'center',
+              color: isDarkMode ? '#e5e7eb' : '#111827',
               borderBottom: isDarkMode
                 ? '1px solid #374151'
                 : '1px solid #e5e7eb',
@@ -320,24 +322,46 @@ const TableView = ({ id, setIsModalNewTaskOpen }: Props) => {
                 : '1px solid #e5e7eb',
             },
             '& .MuiDataGrid-columnHeaders': {
-              backgroundColor: isDarkMode ? '#1f2937' : '#f9fafb',
+              backgroundColor: isDarkMode ? '#111827' : '#f9fafb',
               borderBottom: `2px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
             },
             '& .MuiDataGrid-columnHeader': {
+              color: isDarkMode ? '#e5e7eb' : '#111827',
               borderRight: isDarkMode
                 ? '1px solid #374151'
                 : '1px solid #e5e7eb',
             },
             '& .MuiDataGrid-row': {
+              backgroundColor: isDarkMode ? '#1a1a1a' : '#ffffff',
               borderBottom: isDarkMode
                 ? '1px solid #374151'
                 : '1px solid #e5e7eb',
+              '&:nth-of-type(even)': {
+                backgroundColor: isDarkMode ? '#1f1f1f' : '#f9fafb',
+              },
             },
             '& .MuiDataGrid-row:hover': {
-              backgroundColor: isDarkMode ? '#1f2937' : '#f3f4f6',
+              backgroundColor: isDarkMode ? '#262626 !important' : '#f3f4f6 !important',
             },
             '& .MuiDataGrid-footerContainer': {
+              backgroundColor: isDarkMode ? '#111827' : '#f9fafb',
               borderTop: `2px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+              color: isDarkMode ? '#e5e7eb' : '#111827',
+            },
+            '& .MuiTablePagination-root': {
+              color: isDarkMode ? '#e5e7eb' : '#111827',
+            },
+            '& .MuiTablePagination-selectIcon': {
+              color: isDarkMode ? '#e5e7eb' : '#111827',
+            },
+            '& .MuiTablePagination-actions button': {
+              color: isDarkMode ? '#e5e7eb' : '#111827',
+            },
+            '& .MuiCheckbox-root': {
+              color: isDarkMode ? '#9ca3af' : '#6b7280',
+            },
+            '& .MuiCheckbox-root.Mui-checked': {
+              color: isDarkMode ? '#3b82f6' : '#2563eb',
             },
           }}
           className="border-none"
