@@ -21,12 +21,12 @@ const columns: GridColDef[] = [
     flex: 1,
     resizable: true,
     renderHeader: () => (
-      <span className="font-semibold text-gray-700 dark:text-gray-300">
+      <span className="font-semibold text-gray-800 dark:text-gray-100">
         Title
       </span>
     ),
     renderCell: (params) => (
-      <div className="font-medium text-gray-900 dark:text-white" title={params.value}>
+      <div className="font-medium text-gray-900 dark:text-gray-100" title={params.value}>
         {params.value}
       </div>
     ),
@@ -38,12 +38,12 @@ const columns: GridColDef[] = [
     flex: 1.5,
     resizable: true,
     renderHeader: () => (
-      <span className="font-semibold text-gray-700 dark:text-gray-300">
+      <span className="font-semibold text-gray-800 dark:text-gray-100">
         Description
       </span>
     ),
     renderCell: (params) => (
-      <div className="truncate text-gray-600 dark:text-gray-400" title={params.value}>
+      <div className="truncate text-gray-700 dark:text-gray-200" title={params.value}>
         {params.value || '-'}
       </div>
     ),
@@ -54,21 +54,21 @@ const columns: GridColDef[] = [
     width: 160,
     resizable: true,
     renderHeader: () => (
-      <span className="font-semibold text-gray-700 dark:text-gray-300">
+      <span className="font-semibold text-gray-800 dark:text-gray-100">
         Status
       </span>
     ),
     renderCell: (params) => {
-      if (!params.value) return <span className="text-gray-400">-</span>;
+      if (!params.value) return <span className="text-gray-500 dark:text-gray-300">-</span>;
       const statusColors = {
         'To Do':
-          'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200',
+          'bg-blue-100 text-blue-800 dark:bg-blue-500 dark:text-white',
         'Work In Progress':
-          'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200',
+          'bg-yellow-100 text-yellow-800 dark:bg-yellow-500 dark:text-white',
         Completed:
-          'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200',
+          'bg-green-100 text-green-800 dark:bg-green-500 dark:text-white',
         'Under Review':
-          'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-200',
+          'bg-orange-100 text-orange-800 dark:bg-orange-500 dark:text-white',
       };
       const status = params.value as keyof typeof statusColors;
       return (
@@ -86,20 +86,20 @@ const columns: GridColDef[] = [
     width: 130,
     resizable: true,
     renderHeader: () => (
-      <span className="font-semibold text-gray-700 dark:text-gray-300">
+      <span className="font-semibold text-gray-800 dark:text-gray-100">
         Priority
       </span>
     ),
     renderCell: (params) => {
-      if (!params.value) return <span className="text-gray-400">-</span>;
+      if (!params.value) return <span className="text-gray-500 dark:text-gray-300">-</span>;
       const priorityColors = {
-        Urgent: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200',
-        High: 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-200',
+        Urgent: 'bg-red-100 text-red-800 dark:bg-red-500 dark:text-white',
+        High: 'bg-orange-100 text-orange-800 dark:bg-orange-500 dark:text-white',
         Medium:
-          'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200',
-        Low: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200',
+          'bg-yellow-100 text-yellow-800 dark:bg-yellow-500 dark:text-white',
+        Low: 'bg-blue-100 text-blue-800 dark:bg-blue-500 dark:text-white',
         Backlog:
-          'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200',
+          'bg-gray-100 text-gray-800 dark:bg-gray-600 dark:text-white',
       };
       const priority = params.value as keyof typeof priorityColors;
       return (
@@ -117,25 +117,25 @@ const columns: GridColDef[] = [
     width: 180,
     resizable: true,
     renderHeader: () => (
-      <span className="font-semibold text-gray-700 dark:text-gray-300">
+      <span className="font-semibold text-gray-800 dark:text-gray-100">
         Tags
       </span>
     ),
     renderCell: (params) => {
-      if (!params.value) return <span className="text-gray-400">-</span>;
+      if (!params.value) return <span className="text-gray-500 dark:text-gray-300">-</span>;
       const tags = params.value.split(',').filter((tag: string) => tag.trim());
       return (
         <div className="flex flex-wrap gap-1">
           {tags.slice(0, 2).map((tag: string, index: number) => (
             <span
               key={index}
-              className="inline-flex rounded bg-blue-50 px-2 py-0.5 text-xs text-blue-700 dark:bg-blue-900 dark:text-blue-200"
+              className="inline-flex rounded bg-blue-100 px-2 py-0.5 text-xs text-blue-800 dark:bg-blue-600 dark:text-white"
             >
               {tag.trim()}
             </span>
           ))}
           {tags.length > 2 && (
-            <span className="text-xs text-gray-500">+{tags.length - 2}</span>
+            <span className="text-xs text-gray-600 dark:text-gray-300">+{tags.length - 2}</span>
           )}
         </div>
       );
@@ -147,12 +147,12 @@ const columns: GridColDef[] = [
     width: 130,
     resizable: true,
     renderHeader: () => (
-      <span className="font-semibold text-gray-700 dark:text-gray-300">
+      <span className="font-semibold text-gray-800 dark:text-gray-100">
         Start Date
       </span>
     ),
     renderCell: (params) => (
-      <span className="text-gray-600 dark:text-gray-400">
+      <span className="text-gray-700 dark:text-gray-200">
         {params.value ? new Date(params.value).toLocaleDateString() : '-'}
       </span>
     ),
@@ -163,12 +163,12 @@ const columns: GridColDef[] = [
     width: 130,
     resizable: true,
     renderHeader: () => (
-      <span className="font-semibold text-gray-700 dark:text-gray-300">
+      <span className="font-semibold text-gray-800 dark:text-gray-100">
         Due Date
       </span>
     ),
     renderCell: (params) => (
-      <span className="text-gray-600 dark:text-gray-400">
+      <span className="text-gray-700 dark:text-gray-200">
         {params.value ? new Date(params.value).toLocaleDateString() : '-'}
       </span>
     ),
@@ -179,12 +179,12 @@ const columns: GridColDef[] = [
     width: 150,
     resizable: true,
     renderHeader: () => (
-      <span className="font-semibold text-gray-700 dark:text-gray-300">
+      <span className="font-semibold text-gray-800 dark:text-gray-100">
         Author
       </span>
     ),
     renderCell: (params) => (
-      <div className="font-medium text-gray-700 dark:text-gray-300">
+      <div className="font-medium text-gray-800 dark:text-gray-100">
         {params.value?.username || 'Unknown'}
       </div>
     ),
@@ -195,12 +195,12 @@ const columns: GridColDef[] = [
     width: 150,
     resizable: true,
     renderHeader: () => (
-      <span className="font-semibold text-gray-700 dark:text-gray-300">
+      <span className="font-semibold text-gray-800 dark:text-gray-100">
         Assignee
       </span>
     ),
     renderCell: (params) => (
-      <div className="font-medium text-gray-700 dark:text-gray-300">
+      <div className="font-medium text-gray-800 dark:text-gray-100">
         {params.value?.username || '-'}
       </div>
     ),
@@ -302,7 +302,7 @@ const ReusablePriorityPage = ({ priority }: Props) => {
                 padding: '12px 8px',
                 display: 'flex',
                 alignItems: 'center',
-                color: isDarkMode ? '#e5e7eb' : '#111827',
+                color: isDarkMode ? '#f3f4f6' : '#111827',
                 borderBottom: isDarkMode
                   ? '1px solid #374151'
                   : '1px solid #e5e7eb',
@@ -315,7 +315,7 @@ const ReusablePriorityPage = ({ priority }: Props) => {
                 borderBottom: `2px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
               },
               '& .MuiDataGrid-columnHeader': {
-                color: isDarkMode ? '#e5e7eb' : '#111827',
+                color: isDarkMode ? '#f3f4f6' : '#111827',
                 borderRight: isDarkMode
                   ? '1px solid #374151'
                   : '1px solid #e5e7eb',
@@ -335,22 +335,22 @@ const ReusablePriorityPage = ({ priority }: Props) => {
               '& .MuiDataGrid-footerContainer': {
                 backgroundColor: isDarkMode ? '#111827' : '#f9fafb',
                 borderTop: `2px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
-                color: isDarkMode ? '#e5e7eb' : '#111827',
+                color: isDarkMode ? '#f3f4f6' : '#111827',
               },
               '& .MuiTablePagination-root': {
-                color: isDarkMode ? '#e5e7eb' : '#111827',
+                color: isDarkMode ? '#f3f4f6' : '#111827',
               },
               '& .MuiTablePagination-selectIcon': {
-                color: isDarkMode ? '#e5e7eb' : '#111827',
+                color: isDarkMode ? '#f3f4f6' : '#111827',
               },
               '& .MuiTablePagination-actions button': {
-                color: isDarkMode ? '#e5e7eb' : '#111827',
+                color: isDarkMode ? '#f3f4f6' : '#111827',
               },
               '& .MuiCheckbox-root': {
-                color: isDarkMode ? '#9ca3af' : '#6b7280',
+                color: isDarkMode ? '#d1d5db' : '#6b7280',
               },
               '& .MuiCheckbox-root.Mui-checked': {
-                color: isDarkMode ? '#3b82f6' : '#2563eb',
+                color: isDarkMode ? '#60a5fa' : '#2563eb',
               },
             }}
           />
