@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Settings, Search, Menu, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import GlobalSearch from '@/components/GlobalSearch';
 
 interface NavbarProps {
   onToggleSidebar: () => void;
@@ -10,10 +11,24 @@ interface NavbarProps {
 
 const Navbar = ({ onToggleSidebar, isSidebarCollapsed }: NavbarProps) => {
   const [mounted, setMounted] = useState(false);
+  const [isGlobalSearchOpen, setIsGlobalSearchOpen] = useState(false);
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Keyboard shortcut for global search (Cmd/Ctrl + K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsGlobalSearchOpen(true);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   if (!mounted) {
@@ -59,16 +74,23 @@ const Navbar = ({ onToggleSidebar, isSidebarCollapsed }: NavbarProps) => {
           </div>
           <input
             type="search"
-            className="block w-full pl-10 pr-3 py-1.5 text-sm text-gray-900 dark:text-gray-100 
+            className="block w-full pl-10 pr-20 py-1.5 text-sm text-gray-900 dark:text-gray-100 
                      border border-gray-200 dark:border-gray-700 rounded-lg
                      bg-gray-50 dark:bg-gray-800 
                      focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 
                      focus:border-blue-500 dark:focus:border-blue-600 
                      placeholder-gray-500 dark:placeholder-gray-400
-                     outline-none"
-            placeholder="Search..."
-            aria-label="Search"
+                     outline-none cursor-pointer"
+            placeholder="Search tasks, projects, users..."
+            aria-label="Global Search"
+            onClick={() => setIsGlobalSearchOpen(true)}
+            readOnly
           />
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+            <kbd className="hidden sm:inline-flex items-center px-2 py-1 text-xs font-medium text-gray-500 bg-gray-100 border border-gray-200 rounded dark:bg-gray-600 dark:text-gray-400 dark:border-gray-500">
+              ⌘K
+            </kbd>
+          </div>
         </div>
       </div>
 
@@ -92,6 +114,12 @@ const Navbar = ({ onToggleSidebar, isSidebarCollapsed }: NavbarProps) => {
           <Settings className="h-5 w-5 text-gray-600 dark:text-gray-400" />
         </button>
       </div>
+
+      {/* Global Search Modal */}
+      <GlobalSearch
+        isOpen={isGlobalSearchOpen}
+        onClose={() => setIsGlobalSearchOpen(false)}
+      />
     </nav>
   );
 };

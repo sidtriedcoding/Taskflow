@@ -80,6 +80,7 @@ export interface SearchResults {
   projects?: Project[];
   tasks?: Task[];
   users?: User[];
+  teams?: Team[];
 }
 
 interface CreateProjectArgs {
