@@ -108,31 +108,43 @@ const ModalNewTask = ({ isOpen, onClose, id = null }: Props) => {
           onChange={(e) => setDescription(e.target.value)}
         />
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-2">
-          <select
-            className={selectStyles}
-            value={status}
-            onChange={(e) =>
-              setStatus(Status[e.target.value as keyof typeof Status])
-            }
-          >
-            <option value={Status.ToDo}>To Do</option>
-            <option value={Status.WorkInProgress}>Work In Progress</option>
-            <option value={Status.UnderReview}>Under Review</option>
-            <option value={Status.Completed}>Completed</option>
-          </select>
-          <select
-            className={selectStyles}
-            value={priority}
-            onChange={(e) =>
-              setPriority(Priority[e.target.value as keyof typeof Priority])
-            }
-          >
-            <option value={Priority.Urgent}>Urgent</option>
-            <option value={Priority.High}>High</option>
-            <option value={Priority.Medium}>Medium</option>
-            <option value={Priority.Low}>Low</option>
-            <option value={Priority.Backlog}>Backlog</option>
-          </select>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Status *
+            </label>
+            <select
+              className={selectStyles}
+              value={status}
+              onChange={(e) =>
+                setStatus(Status[e.target.value as keyof typeof Status])
+              }
+              required
+            >
+              <option value={Status.ToDo}>To Do</option>
+              <option value={Status.WorkInProgress}>Work In Progress</option>
+              <option value={Status.UnderReview}>Under Review</option>
+              <option value={Status.Completed}>Completed</option>
+            </select>
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Priority *
+            </label>
+            <select
+              className={selectStyles}
+              value={priority}
+              onChange={(e) =>
+                setPriority(Priority[e.target.value as keyof typeof Priority])
+              }
+              required
+            >
+              <option value={Priority.Urgent}>Urgent</option>
+              <option value={Priority.High}>High</option>
+              <option value={Priority.Medium}>Medium</option>
+              <option value={Priority.Low}>Low</option>
+              <option value={Priority.Backlog}>Backlog</option>
+            </select>
+          </div>
         </div>
         <input
           type="text"
