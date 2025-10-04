@@ -123,8 +123,8 @@ const columns = (
     {
       field: 'description',
       headerName: 'Description',
-      flex: 2,
-      minWidth: 300,
+      flex: 3,
+      minWidth: 400,
       resizable: true,
       renderHeader: () => (
         <span className="font-semibold text-gray-800 dark:text-gray-100">
@@ -132,7 +132,7 @@ const columns = (
         </span>
       ),
       renderCell: (params) => (
-        <div className="text-gray-700 dark:text-gray-100 break-words" title={params.value}>
+        <div className="text-gray-700 dark:text-gray-100 break-words leading-relaxed" title={params.value}>
           {params.value || '-'}
         </div>
       ),

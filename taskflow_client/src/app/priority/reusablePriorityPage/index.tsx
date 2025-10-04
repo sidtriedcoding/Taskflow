@@ -34,8 +34,8 @@ const columns: GridColDef[] = [
   {
     field: 'description',
     headerName: 'Description',
-    width: 300,
-    flex: 2,
+    width: 400,
+    flex: 3,
     resizable: true,
     renderHeader: () => (
       <span className="font-semibold text-gray-800 dark:text-gray-100">
@@ -43,7 +43,7 @@ const columns: GridColDef[] = [
       </span>
     ),
     renderCell: (params) => (
-      <div className="text-gray-700 dark:text-gray-100 break-words" title={params.value}>
+      <div className="text-gray-700 dark:text-gray-100 break-words leading-relaxed" title={params.value}>
         {params.value || '-'}
       </div>
     ),
