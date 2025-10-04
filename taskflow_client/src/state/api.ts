@@ -128,7 +128,7 @@ interface CreateTeamArgs {
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:80/api',
+    baseUrl: process.env.REACT_APP_API_URL,
     prepareHeaders: (headers) => {
       headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
       headers.set('Pragma', 'no-cache');
