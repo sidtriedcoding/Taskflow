@@ -1,7 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { X, Save, Calendar, User, Flag, Tag } from 'lucide-react';
-import { Task, useUpdateTaskMutation, useGetUsersQuery } from '@/app/store';
+import { Task } from '@/state/api';
+import { useUpdateTaskMutation, useGetUsersQuery } from '@/app/store';
 
 interface TaskEditModalProps {
     isOpen: boolean;
@@ -50,9 +51,9 @@ const TaskEditModal = ({ isOpen, onClose, task }: TaskEditModalProps) => {
                     priority: formData.priority,
                     status: formData.status,
                     tags: formData.tags,
-                    startDate: formData.startDate ? new Date(formData.startDate).toISOString() : null,
-                    dueDate: formData.dueDate ? new Date(formData.dueDate).toISOString() : null,
-                    assignedUserId: formData.assignedUserId ? Number(formData.assignedUserId) : null,
+                    startDate: formData.startDate ? new Date(formData.startDate).toISOString() : undefined,
+                    dueDate: formData.dueDate ? new Date(formData.dueDate).toISOString() : undefined,
+                    assignedUserId: formData.assignedUserId ? Number(formData.assignedUserId) : undefined,
                 },
             }).unwrap();
             onClose();

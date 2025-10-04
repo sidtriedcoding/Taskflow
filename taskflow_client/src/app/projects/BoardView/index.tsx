@@ -1,11 +1,11 @@
-import {
-  useGetTasksQuery,
-  useUpdateTaskStatusMutation,
+import { 
+  useGetTasksQuery, 
+  useUpdateTaskStatusMutation, 
   useDeleteTaskMutation,
   useDuplicateTaskMutation,
-  useUpdateTaskMutation,
-  Status
+  useUpdateTaskMutation
 } from '@/app/store';
+import { Status } from '@/state/api';
 import React, { useState } from 'react';
 import { DndProvider, useDrag, useDrop, DropTargetMonitor, DragSourceMonitor } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
