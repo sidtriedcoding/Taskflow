@@ -1,11 +1,13 @@
 import { useGetTasksQuery, useUpdateTaskStatusMutation, Status } from '@/state/api';
-import React from 'react';
+import React, { useState } from 'react';
 import { DndProvider, useDrag, useDrop, DropTargetMonitor, DragSourceMonitor } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Task as TaskType } from '@/state/api';
 import { EllipsisVertical, MessageSquareMore, Plus } from 'lucide-react';
 import { format } from 'date-fns';
 import Image from 'next/image';
+import TaskActionsDropdown from '@/components/TaskActionsDropdown';
+import TaskCommentsModal from '@/components/TaskCommentsModal';
 
 type BoardProps = {
   id: string;
@@ -152,6 +154,8 @@ const Task = ({ task }: TaskProps) => {
     }),
   }));
 
+  const [isCommentsModalOpen, setIsCommentsModalOpen] = useState(false);
+
   const taskTagsSplit = task.tags ? task.tags.split(',') : [];
 
   const formattedStartDate = task.startDate
@@ -162,6 +166,31 @@ const Task = ({ task }: TaskProps) => {
     : '';
 
   const numberOfComments = (task.comments && task.comments.length) || 0;
+
+  const handleEditTask = (task: TaskType) => {
+    console.log('Edit task:', task);
+    // TODO: Implement edit task functionality
+  };
+
+  const handleDeleteTask = (task: TaskType) => {
+    console.log('Delete task:', task);
+    // TODO: Implement delete task functionality
+  };
+
+  const handleDuplicateTask = (task: TaskType) => {
+    console.log('Duplicate task:', task);
+    // TODO: Implement duplicate task functionality
+  };
+
+  const handleArchiveTask = (task: TaskType) => {
+    console.log('Archive task:', task);
+    // TODO: Implement archive task functionality
+  };
+
+  const handleFlagTask = (task: TaskType) => {
+    console.log('Flag task:', task);
+    // TODO: Implement flag task functionality
+  };
 
   const PriorityTag = ({ priority }: { priority: TaskType['priority'] }) => (
     <div
@@ -210,9 +239,14 @@ const Task = ({ task }: TaskProps) => {
               ))}
             </div>
           </div>
-          <button className="flex h-6 w-4 flex-shrink-0 items-center justify-center dark:text-neutral-500">
-            <EllipsisVertical size={26} />
-          </button>
+          <TaskActionsDropdown
+            task={task}
+            onEdit={handleEditTask}
+            onDelete={handleDeleteTask}
+            onDuplicate={handleDuplicateTask}
+            onArchive={handleArchiveTask}
+            onFlag={handleFlagTask}
+          />
         </div>
 
         <div className="my-3 flex justify-between">
@@ -257,14 +291,23 @@ const Task = ({ task }: TaskProps) => {
               />
             )}
           </div>
-          <div className="flex items-center text-gray-500 dark:text-neutral-500">
+          <button
+            onClick={() => setIsCommentsModalOpen(true)}
+            className="flex items-center text-gray-500 hover:text-gray-700 dark:text-neutral-500 dark:hover:text-gray-300"
+          >
             <MessageSquareMore size={20} />
             <span className="ml-1 text-sm dark:text-neutral-400">
               {numberOfComments}
             </span>
-          </div>
+          </button>
         </div>
       </div>
+
+      <TaskCommentsModal
+        isOpen={isCommentsModalOpen}
+        onClose={() => setIsCommentsModalOpen(false)}
+        task={task}
+      />
     </div>
   );
 };
