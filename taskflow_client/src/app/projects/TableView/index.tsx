@@ -108,6 +108,12 @@ const columns = (
       headerName: 'Title',
       flex: 1.5,
       minWidth: 200,
+      resizable: true,
+      renderHeader: () => (
+        <span className="font-semibold text-gray-700 dark:text-gray-300">
+          Title
+        </span>
+      ),
       renderCell: (params) => (
         <div className="font-medium text-gray-900 dark:text-white" title={params.value}>
           {params.value}
@@ -119,6 +125,12 @@ const columns = (
       headerName: 'Description',
       flex: 1.5,
       minWidth: 250,
+      resizable: true,
+      renderHeader: () => (
+        <span className="font-semibold text-gray-700 dark:text-gray-300">
+          Description
+        </span>
+      ),
       renderCell: (params) => (
         <div className="truncate text-gray-600 dark:text-gray-400" title={params.value}>
           {params.value || '-'}
@@ -129,6 +141,12 @@ const columns = (
       field: 'status',
       headerName: 'Status',
       width: 160,
+      resizable: true,
+      renderHeader: () => (
+        <span className="font-semibold text-gray-700 dark:text-gray-300">
+          Status
+        </span>
+      ),
       renderCell: (params) => (
         <StatusDropdown
           taskId={params.row.id}
@@ -140,13 +158,25 @@ const columns = (
     {
       field: 'priority',
       headerName: 'Priority',
-      width: 120,
+      width: 130,
+      resizable: true,
+      renderHeader: () => (
+        <span className="font-semibold text-gray-700 dark:text-gray-300">
+          Priority
+        </span>
+      ),
       renderCell: (params) => <PriorityBadge priority={params.value} />,
     },
     {
       field: 'tags',
       headerName: 'Tags',
       width: 180,
+      resizable: true,
+      renderHeader: () => (
+        <span className="font-semibold text-gray-700 dark:text-gray-300">
+          Tags
+        </span>
+      ),
       renderCell: (params) => {
         if (!params.value) return <span className="text-gray-400">-</span>;
         const tags = params.value.split(',').filter((tag: string) => tag.trim());
@@ -170,19 +200,45 @@ const columns = (
     {
       field: 'startDate',
       headerName: 'Start Date',
-      width: 120,
-      renderCell: (params) => params.value ? new Date(params.value).toLocaleDateString() : '-',
+      width: 130,
+      resizable: true,
+      renderHeader: () => (
+        <span className="font-semibold text-gray-700 dark:text-gray-300">
+          Start Date
+        </span>
+      ),
+      renderCell: (params) => (
+        <span className="text-gray-600 dark:text-gray-400">
+          {params.value ? new Date(params.value).toLocaleDateString() : '-'}
+        </span>
+      ),
     },
     {
       field: 'dueDate',
       headerName: 'Due Date',
-      width: 120,
-      renderCell: (params) => params.value ? new Date(params.value).toLocaleDateString() : '-',
+      width: 130,
+      resizable: true,
+      renderHeader: () => (
+        <span className="font-semibold text-gray-700 dark:text-gray-300">
+          Due Date
+        </span>
+      ),
+      renderCell: (params) => (
+        <span className="text-gray-600 dark:text-gray-400">
+          {params.value ? new Date(params.value).toLocaleDateString() : '-'}
+        </span>
+      ),
     },
     {
       field: 'author',
       headerName: 'Author',
-      width: 130,
+      width: 150,
+      resizable: true,
+      renderHeader: () => (
+        <span className="font-semibold text-gray-700 dark:text-gray-300">
+          Author
+        </span>
+      ),
       renderCell: (params) => (
         <div className="font-medium text-gray-700 dark:text-gray-300">
           {params.value?.username || 'Unknown'}
@@ -192,7 +248,13 @@ const columns = (
     {
       field: 'assignee',
       headerName: 'Assignee',
-      width: 130,
+      width: 150,
+      resizable: true,
+      renderHeader: () => (
+        <span className="font-semibold text-gray-700 dark:text-gray-300">
+          Assignee
+        </span>
+      ),
       renderCell: (params) => (
         <div className="font-medium text-gray-700 dark:text-gray-300">
           {params.value?.username || '-'}
@@ -239,27 +301,48 @@ const TableView = ({ id, setIsModalNewTaskOpen }: Props) => {
         />
       </div>
 
-      <DataGrid
-        rows={tasks || []}
-        columns={columns(handleStatusChange)}
-        getRowHeight={() => 'auto'}
-        sx={{
-          ...dataGridSxStyles(isDarkMode),
-          '& .MuiDataGrid-cell': {
-            padding: '12px 8px',
-            display: 'flex',
-            alignItems: 'center',
-          },
-          '& .MuiDataGrid-columnHeaders': {
-            backgroundColor: isDarkMode ? '#1f2937' : '#f9fafb',
-            borderBottom: `2px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
-          },
-          '& .MuiDataGrid-row:hover': {
-            backgroundColor: isDarkMode ? '#1f2937' : '#f3f4f6',
-          },
-        }}
-        className="!border-none"
-      />
+      <div className="mt-4 rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+        <DataGrid
+          rows={tasks || []}
+          columns={columns(handleStatusChange)}
+          getRowHeight={() => 'auto'}
+          sx={{
+            ...dataGridSxStyles(isDarkMode),
+            '& .MuiDataGrid-cell': {
+              padding: '12px 8px',
+              display: 'flex',
+              alignItems: 'center',
+              borderBottom: isDarkMode
+                ? '1px solid #374151'
+                : '1px solid #e5e7eb',
+              borderRight: isDarkMode
+                ? '1px solid #374151'
+                : '1px solid #e5e7eb',
+            },
+            '& .MuiDataGrid-columnHeaders': {
+              backgroundColor: isDarkMode ? '#1f2937' : '#f9fafb',
+              borderBottom: `2px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+            },
+            '& .MuiDataGrid-columnHeader': {
+              borderRight: isDarkMode
+                ? '1px solid #374151'
+                : '1px solid #e5e7eb',
+            },
+            '& .MuiDataGrid-row': {
+              borderBottom: isDarkMode
+                ? '1px solid #374151'
+                : '1px solid #e5e7eb',
+            },
+            '& .MuiDataGrid-row:hover': {
+              backgroundColor: isDarkMode ? '#1f2937' : '#f3f4f6',
+            },
+            '& .MuiDataGrid-footerContainer': {
+              borderTop: `2px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+            },
+          }}
+          className="border-none"
+        />
+      </div>
     </div>
   );
 };

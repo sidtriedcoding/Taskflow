@@ -19,47 +19,61 @@ const columns: GridColDef[] = [
     headerName: 'Title',
     width: 200,
     flex: 1,
+    resizable: true,
     renderHeader: () => (
-      <span className="font-semibold text-gray-600 dark:text-gray-300">
+      <span className="font-semibold text-gray-700 dark:text-gray-300">
         Title
       </span>
+    ),
+    renderCell: (params) => (
+      <div className="font-medium text-gray-900 dark:text-white" title={params.value}>
+        {params.value}
+      </div>
     ),
   },
   {
     field: 'description',
     headerName: 'Description',
     width: 300,
-    flex: 1,
+    flex: 1.5,
+    resizable: true,
     renderHeader: () => (
-      <span className="font-semibold text-gray-600 dark:text-gray-300">
+      <span className="font-semibold text-gray-700 dark:text-gray-300">
         Description
       </span>
+    ),
+    renderCell: (params) => (
+      <div className="truncate text-gray-600 dark:text-gray-400" title={params.value}>
+        {params.value || '-'}
+      </div>
     ),
   },
   {
     field: 'status',
     headerName: 'Status',
-    width: 150,
+    width: 160,
+    resizable: true,
     renderHeader: () => (
-      <span className="font-semibold text-gray-600 dark:text-gray-300">
+      <span className="font-semibold text-gray-700 dark:text-gray-300">
         Status
       </span>
     ),
     renderCell: (params) => {
+      if (!params.value) return <span className="text-gray-400">-</span>;
       const statusColors = {
         'To Do':
-          'text-gray-600 bg-gray-100 dark:text-gray-300 dark:bg-gray-700',
+          'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200',
         'Work In Progress':
-          'text-blue-600 bg-blue-100 dark:text-blue-300 dark:bg-blue-900/20',
+          'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200',
         Completed:
-          'text-green-600 bg-green-100 dark:text-green-300 dark:bg-green-900/20',
+          'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200',
         'Under Review':
-          'text-yellow-600 bg-yellow-100 dark:text-yellow-300 dark:bg-yellow-900/20',
+          'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-200',
       };
       const status = params.value as keyof typeof statusColors;
       return (
         <span
-          className={`rounded-full px-2 py-1 text-sm ${statusColors[status] || statusColors['To Do']}`}
+          className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${statusColors[status] || statusColors['To Do']}`}
         >
           {status}
         </span>
@@ -70,25 +84,27 @@ const columns: GridColDef[] = [
     field: 'priority',
     headerName: 'Priority',
     width: 130,
+    resizable: true,
     renderHeader: () => (
-      <span className="font-semibold text-gray-600 dark:text-gray-300">
+      <span className="font-semibold text-gray-700 dark:text-gray-300">
         Priority
       </span>
     ),
     renderCell: (params) => {
+      if (!params.value) return <span className="text-gray-400">-</span>;
       const priorityColors = {
-        Urgent: 'text-red-600 bg-red-100 dark:text-red-300 dark:bg-red-900/20',
-        High: 'text-orange-600 bg-orange-100 dark:text-orange-300 dark:bg-orange-900/20',
+        Urgent: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200',
+        High: 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-200',
         Medium:
-          'text-yellow-600 bg-yellow-100 dark:text-yellow-300 dark:bg-yellow-900/20',
-        Low: 'text-green-600 bg-green-100 dark:text-green-300 dark:bg-green-900/20',
+          'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200',
+        Low: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200',
         Backlog:
-          'text-gray-600 bg-gray-100 dark:text-gray-300 dark:bg-gray-700',
+          'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200',
       };
       const priority = params.value as keyof typeof priorityColors;
       return (
         <span
-          className={`rounded-full px-2 py-1 text-sm ${priorityColors[priority] || priorityColors['Medium']}`}
+          className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${priorityColors[priority] || priorityColors['Medium']}`}
         >
           {priority}
         </span>
@@ -98,24 +114,29 @@ const columns: GridColDef[] = [
   {
     field: 'tags',
     headerName: 'Tags',
-    width: 150,
+    width: 180,
+    resizable: true,
     renderHeader: () => (
-      <span className="font-semibold text-gray-600 dark:text-gray-300">
+      <span className="font-semibold text-gray-700 dark:text-gray-300">
         Tags
       </span>
     ),
     renderCell: (params) => {
-      const tags = params.value?.split(',') || [];
+      if (!params.value) return <span className="text-gray-400">-</span>;
+      const tags = params.value.split(',').filter((tag: string) => tag.trim());
       return (
         <div className="flex flex-wrap gap-1">
-          {tags.map((tag: string, index: number) => (
+          {tags.slice(0, 2).map((tag: string, index: number) => (
             <span
               key={index}
-              className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300"
+              className="inline-flex rounded bg-blue-50 px-2 py-0.5 text-xs text-blue-700 dark:bg-blue-900 dark:text-blue-200"
             >
               {tag.trim()}
             </span>
           ))}
+          {tags.length > 2 && (
+            <span className="text-xs text-gray-500">+{tags.length - 2}</span>
+          )}
         </div>
       );
     },
@@ -124,51 +145,65 @@ const columns: GridColDef[] = [
     field: 'startDate',
     headerName: 'Start Date',
     width: 130,
+    resizable: true,
     renderHeader: () => (
-      <span className="font-semibold text-gray-600 dark:text-gray-300">
+      <span className="font-semibold text-gray-700 dark:text-gray-300">
         Start Date
       </span>
     ),
-    valueFormatter: (params: { value: string | null }) => {
-      if (!params.value) return '';
-      return new Date(params.value).toLocaleDateString();
-    },
+    renderCell: (params) => (
+      <span className="text-gray-600 dark:text-gray-400">
+        {params.value ? new Date(params.value).toLocaleDateString() : '-'}
+      </span>
+    ),
   },
   {
     field: 'dueDate',
     headerName: 'Due Date',
     width: 130,
+    resizable: true,
     renderHeader: () => (
-      <span className="font-semibold text-gray-600 dark:text-gray-300">
+      <span className="font-semibold text-gray-700 dark:text-gray-300">
         Due Date
       </span>
     ),
-    valueFormatter: (params: { value: string | null }) => {
-      if (!params.value) return '';
-      return new Date(params.value).toLocaleDateString();
-    },
+    renderCell: (params) => (
+      <span className="text-gray-600 dark:text-gray-400">
+        {params.value ? new Date(params.value).toLocaleDateString() : '-'}
+      </span>
+    ),
   },
   {
     field: 'author',
     headerName: 'Author',
     width: 150,
+    resizable: true,
     renderHeader: () => (
-      <span className="font-semibold text-gray-600 dark:text-gray-300">
+      <span className="font-semibold text-gray-700 dark:text-gray-300">
         Author
       </span>
     ),
-    renderCell: (params) => params.value?.username || 'Unknown',
+    renderCell: (params) => (
+      <div className="font-medium text-gray-700 dark:text-gray-300">
+        {params.value?.username || 'Unknown'}
+      </div>
+    ),
   },
   {
     field: 'assignee',
     headerName: 'Assignee',
     width: 150,
+    resizable: true,
     renderHeader: () => (
-      <span className="font-semibold text-gray-600 dark:text-gray-300">
+      <span className="font-semibold text-gray-700 dark:text-gray-300">
         Assignee
       </span>
     ),
-    renderCell: (params) => params.value?.username || 'Unassigned',
+    renderCell: (params) => (
+      <div className="font-medium text-gray-700 dark:text-gray-300">
+        {params.value?.username || '-'}
+      </div>
+    ),
   },
 ];
 
@@ -246,12 +281,13 @@ const ReusablePriorityPage = ({ priority }: Props) => {
           ))}
         </div>
       ) : (
-        <div className="flex-1 rounded-lg bg-white shadow-sm dark:bg-gray-800">
+        <div className="flex-1 rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
           <DataGrid
             rows={filteredTasks}
             columns={columns}
             checkboxSelection
             getRowId={(row) => row.id}
+            getRowHeight={() => 'auto'}
             initialState={{
               pagination: {
                 paginationModel: { pageSize: 10, page: 0 },
@@ -261,21 +297,36 @@ const ReusablePriorityPage = ({ priority }: Props) => {
             className="border-none"
             sx={{
               ...dataGridSxStyles(isDarkMode),
-              '& .MuiDataGrid-columnHeaders': {
-                backgroundColor: isDarkMode
-                  ? 'rgba(55, 65, 81, 0.5)'
-                  : 'rgba(243, 244, 246, 0.5)',
-                borderBottom: 'none',
-              },
               '& .MuiDataGrid-cell': {
+                padding: '12px 8px',
+                display: 'flex',
+                alignItems: 'center',
                 borderBottom: isDarkMode
-                  ? '1px solid rgba(75, 85, 99, 0.2)'
-                  : '1px solid rgba(229, 231, 235, 0.5)',
+                  ? '1px solid #374151'
+                  : '1px solid #e5e7eb',
+                borderRight: isDarkMode
+                  ? '1px solid #374151'
+                  : '1px solid #e5e7eb',
+              },
+              '& .MuiDataGrid-columnHeaders': {
+                backgroundColor: isDarkMode ? '#1f2937' : '#f9fafb',
+                borderBottom: `2px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+              },
+              '& .MuiDataGrid-columnHeader': {
+                borderRight: isDarkMode
+                  ? '1px solid #374151'
+                  : '1px solid #e5e7eb',
+              },
+              '& .MuiDataGrid-row': {
+                borderBottom: isDarkMode
+                  ? '1px solid #374151'
+                  : '1px solid #e5e7eb',
               },
               '& .MuiDataGrid-row:hover': {
-                backgroundColor: isDarkMode
-                  ? 'rgba(55, 65, 81, 0.1)'
-                  : 'rgba(243, 244, 246, 0.5)',
+                backgroundColor: isDarkMode ? '#1f2937' : '#f3f4f6',
+              },
+              '& .MuiDataGrid-footerContainer': {
+                borderTop: `2px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
               },
             }}
           />
