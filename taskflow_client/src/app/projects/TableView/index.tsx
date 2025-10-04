@@ -285,7 +285,7 @@ const TableView = ({ id, setIsModalNewTaskOpen }: Props) => {
   if (error || !tasks) return <div>An error occurred while fetching tasks</div>;
 
   return (
-    <div className="h-[650px] w-full px-4 pb-8 xl:px-6">
+    <div className="flex h-[650px] w-full flex-col px-4 pb-8 xl:px-6">
       <div className="pt-5">
         <Header
           name="Table"
@@ -301,7 +301,7 @@ const TableView = ({ id, setIsModalNewTaskOpen }: Props) => {
         />
       </div>
 
-      <div className="mt-4 rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-dark-secondary">
+      <div className="mt-4 flex-1 rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-dark-secondary">
         <DataGrid
           rows={tasks || []}
           columns={columns(handleStatusChange)}
@@ -309,6 +309,8 @@ const TableView = ({ id, setIsModalNewTaskOpen }: Props) => {
           sx={{
             ...dataGridSxStyles(isDarkMode),
             backgroundColor: isDarkMode ? '#1a1a1a' : '#ffffff',
+            width: '100%',
+            height: '100%',
             '& .MuiDataGrid-cell': {
               padding: '12px 8px',
               display: 'flex',

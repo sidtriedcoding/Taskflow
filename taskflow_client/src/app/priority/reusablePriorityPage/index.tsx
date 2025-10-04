@@ -298,6 +298,8 @@ const ReusablePriorityPage = ({ priority }: Props) => {
             sx={{
               ...dataGridSxStyles(isDarkMode),
               backgroundColor: isDarkMode ? '#1a1a1a' : '#ffffff',
+              width: '100%',
+              height: '100%',
               '& .MuiDataGrid-cell': {
                 padding: '12px 8px',
                 display: 'flex',
