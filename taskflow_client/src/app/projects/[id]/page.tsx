@@ -18,6 +18,7 @@ const Project = ({ params }: Props) => {
 
   const [activeTab, setActiveTab] = useState('Board');
   const [isModalNewTaskOpen, setIsModalNewTaskOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   return (
     <div>
@@ -30,18 +31,20 @@ const Project = ({ params }: Props) => {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         setIsModalNewTaskOpen={setIsModalNewTaskOpen}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
       />
       {activeTab === 'Board' && (
-        <Board id={id} setIsModalNewTaskOpen={setIsModalNewTaskOpen} />
+        <Board id={id} setIsModalNewTaskOpen={setIsModalNewTaskOpen} searchTerm={searchTerm} />
       )}
       {activeTab === 'List' && (
-        <List id={id} setIsModalNewTaskOpen={setIsModalNewTaskOpen} />
+        <List id={id} setIsModalNewTaskOpen={setIsModalNewTaskOpen} searchTerm={searchTerm} />
       )}
       {activeTab === 'Timeline' && (
-        <Timeline id={id} setIsModalNewTaskOpen={setIsModalNewTaskOpen} />
+        <Timeline id={id} setIsModalNewTaskOpen={setIsModalNewTaskOpen} searchTerm={searchTerm} />
       )}
       {activeTab === 'Table' && (
-        <Table id={id} setIsModalNewTaskOpen={setIsModalNewTaskOpen} />
+        <Table id={id} setIsModalNewTaskOpen={setIsModalNewTaskOpen} searchTerm={searchTerm} />
       )}
     </div>
   );

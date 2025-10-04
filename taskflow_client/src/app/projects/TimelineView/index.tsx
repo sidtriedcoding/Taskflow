@@ -35,9 +35,10 @@ MemoizedGanttChart.displayName = 'MemoizedGanttChart';
 type Props = {
   id: string;
   setIsModalNewTaskOpen: (isOpen: boolean) => void;
+  searchTerm: string;
 };
 
-const Timeline = ({ id, setIsModalNewTaskOpen }: Props) => {
+const Timeline = ({ id, setIsModalNewTaskOpen, searchTerm }: Props) => {
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
   const {
     data: tasks,
@@ -47,9 +48,28 @@ const Timeline = ({ id, setIsModalNewTaskOpen }: Props) => {
 
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.Month);
 
-  const ganttTasks = useMemo(() => {
+  // Filter tasks based on search term
+  const filteredTasks = useMemo(() => {
     if (!tasks) return [];
-    return tasks.map((task) => ({
+    if (!searchTerm.trim()) return tasks;
+
+    const searchLower = searchTerm.toLowerCase();
+    return tasks.filter((task) => {
+      return (
+        task.title?.toLowerCase().includes(searchLower) ||
+        task.description?.toLowerCase().includes(searchLower) ||
+        task.status?.toLowerCase().includes(searchLower) ||
+        task.priority?.toLowerCase().includes(searchLower) ||
+        task.tags?.toLowerCase().includes(searchLower) ||
+        task.author?.username?.toLowerCase().includes(searchLower) ||
+        task.assignee?.username?.toLowerCase().includes(searchLower)
+      );
+    });
+  }, [tasks, searchTerm]);
+
+  const ganttTasks = useMemo(() => {
+    if (!filteredTasks) return [];
+    return filteredTasks.map((task) => ({
       start: new Date(task.startDate as string),
       end: new Date(task.dueDate as string),
       name: task.title,
@@ -58,7 +78,7 @@ const Timeline = ({ id, setIsModalNewTaskOpen }: Props) => {
       progress: task.points ? (task.points / 10) * 100 : 0,
       isDisabled: false,
     }));
-  }, [tasks]);
+  }, [filteredTasks]);
 
   const handleViewModeChange = (
     event: React.ChangeEvent<HTMLSelectElement>

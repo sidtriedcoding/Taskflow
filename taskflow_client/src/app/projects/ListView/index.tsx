@@ -6,14 +6,34 @@ import React from 'react';
 type Props = {
   id: string;
   setIsModalNewTaskOpen: (isOpen: boolean) => void;
+  searchTerm: string;
 };
 
-const ListView = ({ id, setIsModalNewTaskOpen }: Props) => {
+const ListView = ({ id, setIsModalNewTaskOpen, searchTerm }: Props) => {
   const {
     data: tasks,
     error,
     isLoading,
   } = useGetTasksQuery({ projectId: Number(id) });
+
+  // Filter tasks based on search term
+  const filteredTasks = React.useMemo(() => {
+    if (!tasks) return [];
+    if (!searchTerm.trim()) return tasks;
+
+    const searchLower = searchTerm.toLowerCase();
+    return tasks.filter((task) => {
+      return (
+        task.title?.toLowerCase().includes(searchLower) ||
+        task.description?.toLowerCase().includes(searchLower) ||
+        task.status?.toLowerCase().includes(searchLower) ||
+        task.priority?.toLowerCase().includes(searchLower) ||
+        task.tags?.toLowerCase().includes(searchLower) ||
+        task.author?.username?.toLowerCase().includes(searchLower) ||
+        task.assignee?.username?.toLowerCase().includes(searchLower)
+      );
+    });
+  }, [tasks, searchTerm]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>An error occurred while fetching tasks</div>;
@@ -35,7 +55,7 @@ const ListView = ({ id, setIsModalNewTaskOpen }: Props) => {
         />
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-        {tasks?.map((task: Task) => (
+        {filteredTasks?.map((task: Task) => (
           <TaskCard key={task.id} task={task} />
         ))}
       </div>

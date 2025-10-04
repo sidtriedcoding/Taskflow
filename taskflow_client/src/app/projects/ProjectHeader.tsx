@@ -15,9 +15,11 @@ type Props = {
   activeTab: string;
   setActiveTab: (tabName: string) => void;
   setIsModalNewTaskOpen?: (isOpen: boolean) => void;
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
 };
 
-const ProjectHeader = ({ activeTab, setActiveTab, setIsModalNewTaskOpen }: Props) => {
+const ProjectHeader = ({ activeTab, setActiveTab, setIsModalNewTaskOpen, searchTerm, setSearchTerm }: Props) => {
   const [isModalNewProjectOpen, setIsModalNewProjectOpen] = useState(false);
 
   return (
@@ -89,6 +91,8 @@ const ProjectHeader = ({ activeTab, setActiveTab, setIsModalNewTaskOpen }: Props
             <input
               type="text"
               placeholder="Search Task"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="rounded-md border py-1 pl-10 pr-4 focus:outline-none dark:border-dark-secondary dark:bg-dark-secondary dark:text-white"
             />
             <Grid3x3 className="absolute left-3 top-2 h-4 w-4 text-gray-400 dark:text-neutral-500" />

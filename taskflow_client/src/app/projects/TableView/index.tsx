@@ -8,6 +8,7 @@ import React from 'react';
 type Props = {
   id: string;
   setIsModalNewTaskOpen: (isOpen: boolean) => void;
+  searchTerm: string;
 };
 
 const StatusPill = ({ status }: { status: string | null | undefined }) => {
@@ -263,7 +264,7 @@ const columns = (
     },
   ];
 
-const TableView = ({ id, setIsModalNewTaskOpen }: Props) => {
+const TableView = ({ id, setIsModalNewTaskOpen, searchTerm }: Props) => {
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
   const {
     data: tasks,
@@ -280,6 +281,25 @@ const TableView = ({ id, setIsModalNewTaskOpen }: Props) => {
       console.error('Failed to update task status:', error);
     }
   };
+
+  // Filter tasks based on search term
+  const filteredTasks = React.useMemo(() => {
+    if (!tasks) return [];
+    if (!searchTerm.trim()) return tasks;
+
+    const searchLower = searchTerm.toLowerCase();
+    return tasks.filter((task) => {
+      return (
+        task.title?.toLowerCase().includes(searchLower) ||
+        task.description?.toLowerCase().includes(searchLower) ||
+        task.status?.toLowerCase().includes(searchLower) ||
+        task.priority?.toLowerCase().includes(searchLower) ||
+        task.tags?.toLowerCase().includes(searchLower) ||
+        task.author?.username?.toLowerCase().includes(searchLower) ||
+        task.assignee?.username?.toLowerCase().includes(searchLower)
+      );
+    });
+  }, [tasks, searchTerm]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error || !tasks) return <div>An error occurred while fetching tasks</div>;
@@ -303,7 +323,7 @@ const TableView = ({ id, setIsModalNewTaskOpen }: Props) => {
 
       <div className="mt-4 flex-1 rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-dark-secondary">
         <DataGrid
-          rows={tasks || []}
+          rows={filteredTasks || []}
           columns={columns(handleStatusChange)}
           getRowHeight={() => 'auto'}
           sx={{

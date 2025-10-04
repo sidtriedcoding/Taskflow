@@ -10,11 +10,12 @@ import Image from 'next/image';
 type BoardProps = {
   id: string;
   setIsModalNewTaskOpen: (isOpen: boolean) => void;
+  searchTerm: string;
 };
 
 const taskStatus = ['To Do', 'Work In Progress', 'Under Review', 'Completed'];
 
-const BoardView = ({ id, setIsModalNewTaskOpen }: BoardProps) => {
+const BoardView = ({ id, setIsModalNewTaskOpen, searchTerm }: BoardProps) => {
   const {
     data: tasks,
     isLoading,
@@ -26,6 +27,25 @@ const BoardView = ({ id, setIsModalNewTaskOpen }: BoardProps) => {
     updateTaskStatus({ taskId, status: toStatus as Status });
   };
 
+  // Filter tasks based on search term
+  const filteredTasks = React.useMemo(() => {
+    if (!tasks) return [];
+    if (!searchTerm.trim()) return tasks;
+
+    const searchLower = searchTerm.toLowerCase();
+    return tasks.filter((task) => {
+      return (
+        task.title?.toLowerCase().includes(searchLower) ||
+        task.description?.toLowerCase().includes(searchLower) ||
+        task.status?.toLowerCase().includes(searchLower) ||
+        task.priority?.toLowerCase().includes(searchLower) ||
+        task.tags?.toLowerCase().includes(searchLower) ||
+        task.author?.username?.toLowerCase().includes(searchLower) ||
+        task.assignee?.username?.toLowerCase().includes(searchLower)
+      );
+    });
+  }, [tasks, searchTerm]);
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>An error occurred while fetching tasks</div>;
 
@@ -36,7 +56,7 @@ const BoardView = ({ id, setIsModalNewTaskOpen }: BoardProps) => {
           <TaskColumn
             key={status}
             status={status}
-            tasks={tasks || []}
+            tasks={filteredTasks || []}
             moveTask={moveTask}
             setIsModalNewTaskOpen={setIsModalNewTaskOpen}
           />
