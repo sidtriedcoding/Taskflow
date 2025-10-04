@@ -1,17 +1,9 @@
 'use client';
 import React, { useState } from 'react';
 import { X, Send, MessageSquare, User } from 'lucide-react';
-import { Task } from '@/state/api';
+import { Task, Comment } from '@/state/api';
+import { useGetCommentsQuery, useCreateCommentMutation } from '@/app/store';
 import Image from 'next/image';
-
-interface Comment {
-    id: number;
-    text: string;
-    userId: number;
-    username: string;
-    userEmail: string;
-    createdAt: string;
-}
 
 interface TaskCommentsModalProps {
     isOpen: boolean;
@@ -21,38 +13,23 @@ interface TaskCommentsModalProps {
 
 const TaskCommentsModal = ({ isOpen, onClose, task }: TaskCommentsModalProps) => {
     const [newComment, setNewComment] = useState('');
-    const [comments, setComments] = useState<Comment[]>([
-        // Mock comments for demonstration
-        {
-            id: 1,
-            text: "This task looks good to me. Let's proceed with the implementation.",
-            userId: 1,
-            username: "Alice Johnson",
-            userEmail: "alice@example.com",
-            createdAt: "2024-01-15T10:30:00Z"
-        },
-        {
-            id: 2,
-            text: "I have some concerns about the timeline. Can we discuss this?",
-            userId: 2,
-            username: "Bob Smith",
-            userEmail: "bob@example.com",
-            createdAt: "2024-01-15T14:20:00Z"
-        }
-    ]);
+    
+    const { data: comments = [], isLoading } = useGetCommentsQuery({ taskId: task.id });
+    const [createComment] = useCreateCommentMutation();
 
-    const handleAddComment = () => {
+    const handleAddComment = async () => {
         if (newComment.trim()) {
-            const comment: Comment = {
-                id: comments.length + 1,
-                text: newComment.trim(),
-                userId: 1, // Mock current user
-                username: "Current User",
-                userEmail: "current@example.com",
-                createdAt: new Date().toISOString()
-            };
-            setComments([...comments, comment]);
-            setNewComment('');
+            try {
+                await createComment({
+                    taskId: task.id,
+                    text: newComment.trim(),
+                    userId: 1, // TODO: Get current user ID from auth context
+                }).unwrap();
+                setNewComment('');
+            } catch (error) {
+                console.error('Failed to create comment:', error);
+                alert('Failed to add comment. Please try again.');
+            }
         }
     };
 
@@ -99,7 +76,14 @@ const TaskCommentsModal = ({ isOpen, onClose, task }: TaskCommentsModalProps) =>
                 </div>
 
                 <div className="max-h-96 overflow-y-auto p-6">
-                    {comments.length === 0 ? (
+                    {isLoading ? (
+                        <div className="text-center py-8">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                                Loading comments...
+                            </p>
+                        </div>
+                    ) : comments.length === 0 ? (
                         <div className="text-center py-8">
                             <MessageSquare className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
                             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
@@ -116,10 +100,10 @@ const TaskCommentsModal = ({ isOpen, onClose, task }: TaskCommentsModalProps) =>
                                     <div className="flex-1">
                                         <div className="flex items-center gap-2">
                                             <span className="text-sm font-medium text-gray-900 dark:text-white">
-                                                {comment.username}
+                                                {comment.user?.username || 'Unknown User'}
                                             </span>
                                             <span className="text-xs text-gray-500 dark:text-gray-400">
-                                                {formatDate(comment.createdAt)}
+                                                {formatDate(comment.createdAt || new Date().toISOString())}
                                             </span>
                                         </div>
                                         <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">

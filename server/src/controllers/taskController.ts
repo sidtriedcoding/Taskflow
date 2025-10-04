@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import { createNotification } from "./notificationController";
 
 const prisma = new PrismaClient();
 
@@ -94,7 +95,28 @@ export const createTask = async (
       taskData.assignee = { connect: { userId: Number(assignedUserId) } };
     }
 
-    const newTask = await prisma.task.create({ data: taskData });
+    const newTask = await prisma.task.create({
+      data: taskData,
+      include: {
+        author: true,
+        assignee: true,
+        project: true,
+      }
+    });
+
+    // Create notification for the assignee when a new task is created
+    if (assignedUserId && assignedUserId !== authorUserId) {
+      await createNotification(
+        `New task assigned: "${newTask.title}"`,
+        `You have been assigned a new task in project "${newTask.project.teamname}"`,
+        'task_update',
+        Number(assignedUserId),
+        newTask.id,
+        newTask.projectId,
+        undefined
+      );
+    }
+
     res.status(201).json(newTask);
   } catch (error: any) {
     console.error("Prisma Error:", error); // Log the detailed prisma error
@@ -131,6 +153,17 @@ export const updateTask = async (
   const updateData = req.body;
 
   try {
+    // Get the current task to compare changes
+    const currentTask = await prisma.task.findUnique({
+      where: { id: Number(taskId) },
+      include: { author: true, assignee: true, project: true }
+    });
+
+    if (!currentTask) {
+      res.status(404).json({ message: 'Task not found' });
+      return;
+    }
+
     // Remove fields that shouldn't be updated directly
     const { id, ...allowedUpdates } = updateData;
 
@@ -144,8 +177,56 @@ export const updateTask = async (
         assignee: true,
         comments: true,
         attachments: true,
+        project: true,
       },
     });
+
+    // Create notifications for relevant changes
+    const changes = [];
+    if (updateData.status && updateData.status !== currentTask.status) {
+      changes.push(`status changed to ${updateData.status}`);
+    }
+    if (updateData.priority && updateData.priority !== currentTask.priority) {
+      changes.push(`priority changed to ${updateData.priority}`);
+    }
+    if (updateData.assignedUserId && updateData.assignedUserId !== currentTask.assignedUserId) {
+      changes.push('assignee changed');
+    }
+    if (updateData.title && updateData.title !== currentTask.title) {
+      changes.push('title updated');
+    }
+
+    if (changes.length > 0) {
+      const title = `Task "${updatedTask.title}" updated`;
+      const message = `The following changes were made: ${changes.join(', ')}`;
+
+      // Notify the assignee if they exist and are different from the author
+      if (updatedTask.assignedUserId && updatedTask.assignedUserId !== updatedTask.authorUserId) {
+        await createNotification(
+          title,
+          message,
+          'task_update',
+          updatedTask.assignedUserId,
+          updatedTask.id,
+          updatedTask.projectId,
+          undefined
+        );
+      }
+
+      // Notify the author if they are different from the assignee
+      if (updatedTask.authorUserId !== updatedTask.assignedUserId) {
+        await createNotification(
+          title,
+          message,
+          'task_update',
+          updatedTask.authorUserId,
+          updatedTask.id,
+          updatedTask.projectId,
+          undefined
+        );
+      }
+    }
+
     res.json(updatedTask);
   } catch (error: any) {
     res.status(500).json({ message: `Error updating task: ${error.message}` });

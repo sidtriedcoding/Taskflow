@@ -14,6 +14,7 @@ import {
   FolderOpen,
   Briefcase,
   RefreshCw,
+  Bell,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -42,6 +43,7 @@ const navigationItems: NavItem[] = [
   { name: 'Home', icon: Home, href: '/' },
   { name: 'Timeline', icon: Clock, href: '/timeline' },
   { name: 'Search', icon: Search, href: '/search' },
+  { name: 'Notifications', icon: Bell, href: '/notifications' },
   { name: 'Settings', icon: Settings, href: '/settings' },
   { name: 'Users', icon: Users, href: '/users' },
   { name: 'Teams', icon: Users, href: '/teams' },

@@ -34,4 +34,12 @@ export {
   useCreateUserMutation,
   useGetTeamsQuery,
   useCreateTeamMutation,
+  useGetNotificationsQuery,
+  useGetUnreadCountQuery,
+  useMarkAsReadMutation,
+  useMarkAllAsReadMutation,
+  useDeleteNotificationMutation,
+  useGetCommentsQuery,
+  useCreateCommentMutation,
+  useDeleteCommentMutation,
 } from '@/state/api';

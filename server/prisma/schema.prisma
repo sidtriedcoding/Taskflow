@@ -25,6 +25,7 @@ model User {
   taskAssignment TaskAssignment[]
   attachments    Attachment[]
   comments       Comment[]
+  notifications  Notification[]
   team           Team?            @relation(fields: [teamId], references: [id])
 
   Task Task[] @relation("TaskAssignee")
@@ -38,6 +39,7 @@ model Team {
   tasks              Task[]        @relation("TeamTasks")
   projectTasks       Task[]        @relation("TeamProjectTasks")
   users              User[]
+  notifications      Notification[]
 }
 
 model Project {
@@ -48,6 +50,7 @@ model Project {
   endDate      DateTime?
   projectTeams ProjectTeam[]
   Task         Task[]
+  notifications Notification[]
 }
 
 model ProjectTeam {
@@ -78,6 +81,7 @@ model Task {
   taskAssignment TaskAssignment[]
   attachments    Attachment[]
   comments       Comment[]
+  notifications  Notification[]
   team           Team?            @relation("TeamTasks", fields: [teamId], references: [id])
   Team           Team[]           @relation("TeamProjectTasks")
 
@@ -109,4 +113,21 @@ model Comment {
   userId Int
   task   Task @relation(fields: [taskId], references: [id])
   user   User @relation(fields: [userId], references: [userId])
+}
+
+model Notification {
+  id          Int       @id @default(autoincrement())
+  title       String
+  message     String
+  type        String    // 'task_update', 'project_update', 'comment', 'team_update'
+  isRead      Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  userId      Int
+  taskId      Int?
+  projectId   Int?
+  teamId      Int?
+  user        User      @relation(fields: [userId], references: [userId])
+  task        Task?     @relation(fields: [taskId], references: [id])
+  project     Project?  @relation(fields: [projectId], references: [id])
+  team        Team?     @relation(fields: [teamId], references: [id])
 }

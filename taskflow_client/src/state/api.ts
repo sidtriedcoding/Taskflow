@@ -45,6 +45,31 @@ export interface Team {
   users?: User[];
 }
 
+export interface Notification {
+  id: number;
+  title: string;
+  message: string;
+  type: 'task_update' | 'project_update' | 'comment' | 'team_update';
+  isRead: boolean;
+  createdAt: string;
+  userId: number;
+  taskId?: number;
+  projectId?: number;
+  teamId?: number;
+  task?: Task;
+  project?: Project;
+  team?: Team;
+}
+
+export interface Comment {
+  id: number;
+  text: string;
+  taskId: number;
+  userId: number;
+  user?: User;
+  task?: Task;
+}
+
 export interface Attachment {
   id: number;
   fileURL: string;
@@ -118,7 +143,7 @@ export const api = createApi({
     },
   }),
   reducerPath: 'api',
-  tagTypes: ['Projects', 'Tasks', 'Users', 'Teams'],
+  tagTypes: ['Projects', 'Tasks', 'Users', 'Teams', 'Notifications', 'Comments'],
   endpoints: (build) => ({
     getProjects: build.query<Project[], void>({
       query: () => 'projects',
@@ -220,6 +245,55 @@ export const api = createApi({
     search: build.query<SearchResults, string>({
       query: (query) => `search?query=${query}`,
     }),
+    getNotifications: build.query<Notification[], { userId?: number }>({
+      query: ({ userId }) => userId ? `notifications?userId=${userId}` : 'notifications',
+      providesTags: ['Notifications'],
+    }),
+    getUnreadCount: build.query<{ count: number }, { userId?: number }>({
+      query: ({ userId }) => userId ? `notifications/unread-count?userId=${userId}` : 'notifications/unread-count',
+      providesTags: ['Notifications'],
+    }),
+    markAsRead: build.mutation<Notification, { notificationId: number }>({
+      query: ({ notificationId }) => ({
+        url: `notifications/${notificationId}/read`,
+        method: 'PATCH',
+      }),
+      invalidatesTags: ['Notifications'],
+    }),
+    markAllAsRead: build.mutation<void, { userId: number }>({
+      query: ({ userId }) => ({
+        url: 'notifications/mark-all-read',
+        method: 'PATCH',
+        body: { userId },
+      }),
+      invalidatesTags: ['Notifications'],
+    }),
+    deleteNotification: build.mutation<void, { notificationId: number }>({
+      query: ({ notificationId }) => ({
+        url: `notifications/${notificationId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Notifications'],
+    }),
+    getComments: build.query<Comment[], { taskId?: number }>({
+      query: ({ taskId }) => taskId ? `comments?taskId=${taskId}` : 'comments',
+      providesTags: ['Comments'],
+    }),
+    createComment: build.mutation<Comment, { taskId: number; text: string; userId: number }>({
+      query: (newComment) => ({
+        url: 'comments',
+        method: 'POST',
+        body: newComment,
+      }),
+      invalidatesTags: ['Comments', 'Notifications'],
+    }),
+    deleteComment: build.mutation<void, { commentId: number }>({
+      query: ({ commentId }) => ({
+        url: `comments/${commentId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Comments'],
+    }),
   }),
 });
 
@@ -237,4 +311,12 @@ export const {
   useCreateUserMutation,
   useGetTeamsQuery,
   useCreateTeamMutation,
+  useGetNotificationsQuery,
+  useGetUnreadCountQuery,
+  useMarkAsReadMutation,
+  useMarkAllAsReadMutation,
+  useDeleteNotificationMutation,
+  useGetCommentsQuery,
+  useCreateCommentMutation,
+  useDeleteCommentMutation,
 } = api;
