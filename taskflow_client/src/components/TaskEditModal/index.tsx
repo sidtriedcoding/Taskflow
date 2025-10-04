@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { X, Save, Calendar, User, Flag, Tag } from 'lucide-react';
-import { Task, useUpdateTaskMutation, useGetUsersQuery } from '@/state/api';
+import { Task, useUpdateTaskMutation, useGetUsersQuery } from '@/app/store';
 
 interface TaskEditModalProps {
     isOpen: boolean;

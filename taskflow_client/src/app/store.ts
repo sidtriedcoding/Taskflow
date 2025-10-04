@@ -18,3 +18,20 @@ setupListeners(store.dispatch);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+// Export the API hooks
+export {
+  useGetProjectsQuery,
+  useCreateProjectMutation,
+  useGetTasksQuery,
+  useCreateTaskMutation,
+  useUpdateTaskStatusMutation,
+  useUpdateTaskMutation,
+  useDeleteTaskMutation,
+  useDuplicateTaskMutation,
+  useSearchQuery,
+  useGetUsersQuery,
+  useCreateUserMutation,
+  useGetTeamsQuery,
+  useCreateTeamMutation,
+} from '@/state/api';
