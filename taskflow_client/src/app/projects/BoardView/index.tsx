@@ -1,4 +1,11 @@
-import { useGetTasksQuery, useUpdateTaskStatusMutation, Status } from '@/state/api';
+import {
+  useGetTasksQuery,
+  useUpdateTaskStatusMutation,
+  useDeleteTaskMutation,
+  useDuplicateTaskMutation,
+  useUpdateTaskMutation,
+  Status
+} from '@/state/api';
 import React, { useState } from 'react';
 import { DndProvider, useDrag, useDrop, DropTargetMonitor, DragSourceMonitor } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -8,6 +15,7 @@ import { format } from 'date-fns';
 import Image from 'next/image';
 import TaskActionsDropdown from '@/components/TaskActionsDropdown';
 import TaskCommentsModal from '@/components/TaskCommentsModal';
+import TaskEditModal from '@/components/TaskEditModal';
 
 type BoardProps = {
   id: string;
@@ -155,6 +163,11 @@ const Task = ({ task }: TaskProps) => {
   }));
 
   const [isCommentsModalOpen, setIsCommentsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const [deleteTask] = useDeleteTaskMutation();
+  const [duplicateTask] = useDuplicateTaskMutation();
+  const [updateTask] = useUpdateTaskMutation();
 
   const taskTagsSplit = task.tags ? task.tags.split(',') : [];
 
@@ -168,28 +181,56 @@ const Task = ({ task }: TaskProps) => {
   const numberOfComments = (task.comments && task.comments.length) || 0;
 
   const handleEditTask = (task: TaskType) => {
-    console.log('Edit task:', task);
-    // TODO: Implement edit task functionality
+    setIsEditModalOpen(true);
   };
 
-  const handleDeleteTask = (task: TaskType) => {
-    console.log('Delete task:', task);
-    // TODO: Implement delete task functionality
+  const handleDeleteTask = async (task: TaskType) => {
+    if (window.confirm(`Are you sure you want to delete "${task.title}"? This action cannot be undone.`)) {
+      try {
+        await deleteTask({ taskId: task.id }).unwrap();
+        console.log('Task deleted successfully');
+      } catch (error: any) {
+        console.error('Failed to delete task:', error);
+        alert(`Failed to delete task: ${error.data?.message || error.message || 'Unknown error'}`);
+      }
+    }
   };
 
-  const handleDuplicateTask = (task: TaskType) => {
-    console.log('Duplicate task:', task);
-    // TODO: Implement duplicate task functionality
+  const handleDuplicateTask = async (task: TaskType) => {
+    try {
+      await duplicateTask({ taskId: task.id }).unwrap();
+      console.log('Task duplicated successfully');
+    } catch (error: any) {
+      console.error('Failed to duplicate task:', error);
+      alert(`Failed to duplicate task: ${error.data?.message || error.message || 'Unknown error'}`);
+    }
   };
 
-  const handleArchiveTask = (task: TaskType) => {
-    console.log('Archive task:', task);
-    // TODO: Implement archive task functionality
+  const handleArchiveTask = async (task: TaskType) => {
+    try {
+      await updateTask({
+        taskId: task.id,
+        updates: { status: 'Completed' }
+      }).unwrap();
+      console.log('Task archived successfully');
+    } catch (error: any) {
+      console.error('Failed to archive task:', error);
+      alert(`Failed to archive task: ${error.data?.message || error.message || 'Unknown error'}`);
+    }
   };
 
-  const handleFlagTask = (task: TaskType) => {
-    console.log('Flag task:', task);
-    // TODO: Implement flag task functionality
+  const handleFlagTask = async (task: TaskType) => {
+    try {
+      const newPriority = task.priority === 'Urgent' ? 'High' : 'Urgent';
+      await updateTask({
+        taskId: task.id,
+        updates: { priority: newPriority }
+      }).unwrap();
+      console.log('Task flagged successfully');
+    } catch (error: any) {
+      console.error('Failed to flag task:', error);
+      alert(`Failed to flag task: ${error.data?.message || error.message || 'Unknown error'}`);
+    }
   };
 
   const PriorityTag = ({ priority }: { priority: TaskType['priority'] }) => (
@@ -306,6 +347,12 @@ const Task = ({ task }: TaskProps) => {
       <TaskCommentsModal
         isOpen={isCommentsModalOpen}
         onClose={() => setIsCommentsModalOpen(false)}
+        task={task}
+      />
+
+      <TaskEditModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
         task={task}
       />
     </div>

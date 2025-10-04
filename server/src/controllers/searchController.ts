@@ -18,11 +18,11 @@ export const search = async (req: Request, res: Response): Promise<void> => {
     const tasks = await prisma.task.findMany({
       where: {
         OR: [
-          { title: { contains: searchTerm, mode: 'insensitive' } },
-          { description: { contains: searchTerm, mode: 'insensitive' } },
-          { status: { contains: searchTerm, mode: 'insensitive' } },
-          { priority: { contains: searchTerm, mode: 'insensitive' } },
-          { tags: { contains: searchTerm, mode: 'insensitive' } },
+          { title: { contains: searchTerm } },
+          { description: { contains: searchTerm } },
+          { status: { contains: searchTerm } },
+          { priority: { contains: searchTerm } },
+          { tags: { contains: searchTerm } },
         ],
       },
       include: {
@@ -36,8 +36,8 @@ export const search = async (req: Request, res: Response): Promise<void> => {
     const projects = await prisma.project.findMany({
       where: {
         OR: [
-          { teamname: { contains: searchTerm, mode: 'insensitive' } },
-          { description: { contains: searchTerm, mode: 'insensitive' } },
+          { teamname: { contains: searchTerm } },
+          { description: { contains: searchTerm } },
         ],
       },
       take: 10,
@@ -47,8 +47,8 @@ export const search = async (req: Request, res: Response): Promise<void> => {
     const users = await prisma.user.findMany({
       where: {
         OR: [
-          { username: { contains: searchTerm, mode: 'insensitive' } },
-          { email: { contains: searchTerm, mode: 'insensitive' } },
+          { username: { contains: searchTerm } },
+          { email: { contains: searchTerm } },
         ],
       },
       take: 10,
@@ -57,7 +57,7 @@ export const search = async (req: Request, res: Response): Promise<void> => {
     // Search teams
     const teams = await prisma.team.findMany({
       where: {
-        teamname: { contains: searchTerm, mode: 'insensitive' },
+        teamname: { contains: searchTerm },
       },
       include: {
         users: true,

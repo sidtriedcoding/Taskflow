@@ -122,3 +122,102 @@ export const updateTaskStatus = async (
     res.status(500).json({ message: `Error updating task status: ${error.message}` });
   }
 };
+
+export const updateTask = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { taskId } = req.params;
+  const updateData = req.body;
+
+  try {
+    // Remove fields that shouldn't be updated directly
+    const { id, ...allowedUpdates } = updateData;
+
+    const updatedTask = await prisma.task.update({
+      where: {
+        id: Number(taskId),
+      },
+      data: allowedUpdates,
+      include: {
+        author: true,
+        assignee: true,
+        comments: true,
+        attachments: true,
+      },
+    });
+    res.json(updatedTask);
+  } catch (error: any) {
+    res.status(500).json({ message: `Error updating task: ${error.message}` });
+  }
+};
+
+export const deleteTask = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { taskId } = req.params;
+
+  try {
+    await prisma.task.delete({
+      where: {
+        id: Number(taskId),
+      },
+    });
+    res.json({ message: 'Task deleted successfully' });
+  } catch (error: any) {
+    res.status(500).json({ message: `Error deleting task: ${error.message}` });
+  }
+};
+
+export const duplicateTask = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { taskId } = req.params;
+
+  try {
+    // Get the original task
+    const originalTask = await prisma.task.findUnique({
+      where: { id: Number(taskId) },
+      include: {
+        author: true,
+        assignee: true,
+      },
+    });
+
+    if (!originalTask) {
+      res.status(404).json({ message: 'Task not found' });
+      return;
+    }
+
+    // Create a duplicate with modified title
+    const duplicateData = {
+      title: `${originalTask.title} (Copy)`,
+      description: originalTask.description,
+      status: 'To Do', // Reset status for duplicate
+      priority: originalTask.priority,
+      tags: originalTask.tags,
+      points: originalTask.points,
+      startDate: originalTask.startDate,
+      dueDate: originalTask.dueDate,
+      projectId: originalTask.projectId,
+      authorUserId: originalTask.authorUserId,
+      assignedUserId: originalTask.assignedUserId,
+    };
+
+    const newTask = await prisma.task.create({
+      data: duplicateData,
+      include: {
+        author: true,
+        assignee: true,
+        comments: true,
+        attachments: true,
+      },
+    });
+
+    res.status(201).json(newTask);
+  } catch (error: any) {
+    res.status(500).json({ message: `Error duplicating task: ${error.message}` });
+  }
+};
