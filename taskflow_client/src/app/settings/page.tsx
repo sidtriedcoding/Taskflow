@@ -119,15 +119,67 @@ const Settings = () => {
         const content = e.target?.result as string;
         const importedSettings = JSON.parse(content);
 
-        // Validate the imported settings structure
+        // Safe merge function to ensure all fields have default values
+        const safeMergeUserSettings = (imported: any) => {
+          return {
+            username: imported.username || "johndoe",
+            email: imported.email || "john.doe@example.com",
+            teamName: imported.teamName || "Development Team",
+            roleName: imported.roleName || "Developer",
+            firstName: imported.firstName || "John",
+            lastName: imported.lastName || "Doe",
+            phone: imported.phone || "+1 (555) 123-4567",
+            timezone: imported.timezone || "UTC-8 (Pacific Time)",
+            language: imported.language || "English",
+            notifications: {
+              email: imported.notifications?.email ?? true,
+              push: imported.notifications?.push ?? true,
+              taskUpdates: imported.notifications?.taskUpdates ?? true,
+              projectUpdates: imported.notifications?.projectUpdates ?? true,
+              teamUpdates: imported.notifications?.teamUpdates ?? false
+            }
+          };
+        };
+
+        const safeMergeTeamSettings = (imported: any) => {
+          return {
+            teamName: imported.teamName || "Development Team",
+            description: imported.description || "Main development team for the project",
+            visibility: imported.visibility || "Private",
+            defaultProjectSettings: {
+              autoAssignTasks: imported.defaultProjectSettings?.autoAssignTasks ?? false,
+              requireApproval: imported.defaultProjectSettings?.requireApproval ?? true,
+              defaultPriority: imported.defaultProjectSettings?.defaultPriority || "Medium"
+            }
+          };
+        };
+
+        const safeMergeProjectSettings = (imported: any) => {
+          return {
+            defaultTaskSettings: {
+              defaultPriority: imported.defaultTaskSettings?.defaultPriority || "Medium",
+              defaultStatus: imported.defaultTaskSettings?.defaultStatus || "To Do",
+              autoAssignToCreator: imported.defaultTaskSettings?.autoAssignToCreator ?? true,
+              requireDueDate: imported.defaultTaskSettings?.requireDueDate ?? false
+            },
+            notificationSettings: {
+              taskCreated: imported.notificationSettings?.taskCreated ?? true,
+              taskUpdated: imported.notificationSettings?.taskUpdated ?? true,
+              taskCompleted: imported.notificationSettings?.taskCompleted ?? true,
+              projectMilestone: imported.notificationSettings?.projectMilestone ?? true
+            }
+          };
+        };
+
+        // Validate and safely merge the imported settings structure
         if (importedSettings.userSettings) {
-          setUserSettings(importedSettings.userSettings);
+          setUserSettings(safeMergeUserSettings(importedSettings.userSettings));
         }
         if (importedSettings.teamSettings) {
-          setTeamSettings(importedSettings.teamSettings);
+          setTeamSettings(safeMergeTeamSettings(importedSettings.teamSettings));
         }
         if (importedSettings.projectSettings) {
-          setProjectSettings(importedSettings.projectSettings);
+          setProjectSettings(safeMergeProjectSettings(importedSettings.projectSettings));
         }
 
         alert('Settings imported successfully!');
@@ -162,7 +214,7 @@ const Settings = () => {
           <label className={labelStyles}>First Name</label>
           <input
             type="text"
-            value={userSettings.firstName}
+            value={userSettings.firstName || ""}
             onChange={(e) => setUserSettings({ ...userSettings, firstName: e.target.value })}
             className={isEditing ? inputStyles : readOnlyStyles}
             disabled={!isEditing}
@@ -172,7 +224,7 @@ const Settings = () => {
           <label className={labelStyles}>Last Name</label>
           <input
             type="text"
-            value={userSettings.lastName}
+            value={userSettings.lastName || ""}
             onChange={(e) => setUserSettings({ ...userSettings, lastName: e.target.value })}
             className={isEditing ? inputStyles : readOnlyStyles}
             disabled={!isEditing}
@@ -182,7 +234,7 @@ const Settings = () => {
           <label className={labelStyles}>Username</label>
           <input
             type="text"
-            value={userSettings.username}
+            value={userSettings.username || ""}
             onChange={(e) => setUserSettings({ ...userSettings, username: e.target.value })}
             className={isEditing ? inputStyles : readOnlyStyles}
             disabled={!isEditing}
@@ -192,7 +244,7 @@ const Settings = () => {
           <label className={labelStyles}>Email</label>
           <input
             type="email"
-            value={userSettings.email}
+            value={userSettings.email || ""}
             onChange={(e) => setUserSettings({ ...userSettings, email: e.target.value })}
             className={isEditing ? inputStyles : readOnlyStyles}
             disabled={!isEditing}
@@ -202,7 +254,7 @@ const Settings = () => {
           <label className={labelStyles}>Phone</label>
           <input
             type="tel"
-            value={userSettings.phone}
+            value={userSettings.phone || ""}
             onChange={(e) => setUserSettings({ ...userSettings, phone: e.target.value })}
             className={isEditing ? inputStyles : readOnlyStyles}
             disabled={!isEditing}
@@ -212,7 +264,7 @@ const Settings = () => {
           <label className={labelStyles}>Team</label>
           <input
             type="text"
-            value={userSettings.teamName}
+            value={userSettings.teamName || ""}
             className={readOnlyStyles}
             disabled
           />
@@ -221,7 +273,7 @@ const Settings = () => {
           <label className={labelStyles}>Role</label>
           <input
             type="text"
-            value={userSettings.roleName}
+            value={userSettings.roleName || ""}
             className={readOnlyStyles}
             disabled
           />
@@ -229,7 +281,7 @@ const Settings = () => {
         <div>
           <label className={labelStyles}>Timezone</label>
           <select
-            value={userSettings.timezone}
+            value={userSettings.timezone || ""}
             onChange={(e) => setUserSettings({ ...userSettings, timezone: e.target.value })}
             className={isEditing ? inputStyles : readOnlyStyles}
             disabled={!isEditing}
@@ -271,7 +323,7 @@ const Settings = () => {
           <label className={labelStyles}>Team Name</label>
           <input
             type="text"
-            value={teamSettings.teamName}
+            value={teamSettings.teamName || ""}
             onChange={(e) => setTeamSettings({ ...teamSettings, teamName: e.target.value })}
             className={inputStyles}
           />
@@ -279,7 +331,7 @@ const Settings = () => {
         <div>
           <label className={labelStyles}>Visibility</label>
           <select
-            value={teamSettings.visibility}
+            value={teamSettings.visibility || ""}
             onChange={(e) => setTeamSettings({ ...teamSettings, visibility: e.target.value })}
             className={inputStyles}
           >
@@ -293,7 +345,7 @@ const Settings = () => {
       <div>
         <label className={labelStyles}>Team Description</label>
         <textarea
-          value={teamSettings.description}
+          value={teamSettings.description || ""}
           onChange={(e) => setTeamSettings({ ...teamSettings, description: e.target.value })}
           rows={3}
           className={inputStyles}
@@ -348,7 +400,7 @@ const Settings = () => {
           <div>
             <label className={labelStyles}>Default Priority</label>
             <select
-              value={projectSettings.defaultTaskSettings.defaultPriority}
+              value={projectSettings.defaultTaskSettings.defaultPriority || ""}
               onChange={(e) => setProjectSettings({
                 ...projectSettings,
                 defaultTaskSettings: {
@@ -367,7 +419,7 @@ const Settings = () => {
           <div>
             <label className={labelStyles}>Default Status</label>
             <select
-              value={projectSettings.defaultTaskSettings.defaultStatus}
+              value={projectSettings.defaultTaskSettings.defaultStatus || ""}
               onChange={(e) => setProjectSettings({
                 ...projectSettings,
                 defaultTaskSettings: {
@@ -585,7 +637,7 @@ const Settings = () => {
         <div>
           <label className={labelStyles}>Language</label>
           <select
-            value={userSettings.language}
+            value={userSettings.language || ""}
             onChange={(e) => setUserSettings({ ...userSettings, language: e.target.value })}
             className={inputStyles}
           >
