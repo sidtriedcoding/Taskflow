@@ -82,15 +82,53 @@ const StatusDropdown = ({
   );
 };
 
+const PriorityBadge = ({ priority }: { priority: string | null | undefined }) => {
+  if (!priority) return <span className="text-gray-400">-</span>;
+
+  const colors: Record<string, string> = {
+    'Urgent': 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200',
+    'High': 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-200',
+    'Medium': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200',
+    'Low': 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200',
+    'Backlog': 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200',
+  };
+
+  return (
+    <span className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${colors[priority] || colors['Medium']}`}>
+      {priority}
+    </span>
+  );
+};
+
 const columns = (
   onStatusChange: (taskId: number, status: Status) => void
 ): GridColDef[] => [
-    { field: 'title', headerName: 'Title', flex: 1, minWidth: 150 },
-    { field: 'description', headerName: 'Description', flex: 1, minWidth: 200 },
+    {
+      field: 'title',
+      headerName: 'Title',
+      flex: 1.5,
+      minWidth: 200,
+      renderCell: (params) => (
+        <div className="font-medium text-gray-900 dark:text-white" title={params.value}>
+          {params.value}
+        </div>
+      ),
+    },
+    {
+      field: 'description',
+      headerName: 'Description',
+      flex: 1.5,
+      minWidth: 250,
+      renderCell: (params) => (
+        <div className="truncate text-gray-600 dark:text-gray-400" title={params.value}>
+          {params.value || '-'}
+        </div>
+      ),
+    },
     {
       field: 'status',
       headerName: 'Status',
-      width: 180,
+      width: 160,
       renderCell: (params) => (
         <StatusDropdown
           taskId={params.row.id}
@@ -99,21 +137,67 @@ const columns = (
         />
       ),
     },
-    { field: 'priority', headerName: 'Priority', width: 100 },
-    { field: 'tags', headerName: 'Tags', width: 130 },
-    { field: 'startDate', headerName: 'Start Date', width: 130 },
-    { field: 'dueDate', headerName: 'Due Date', width: 130 },
+    {
+      field: 'priority',
+      headerName: 'Priority',
+      width: 120,
+      renderCell: (params) => <PriorityBadge priority={params.value} />,
+    },
+    {
+      field: 'tags',
+      headerName: 'Tags',
+      width: 180,
+      renderCell: (params) => {
+        if (!params.value) return <span className="text-gray-400">-</span>;
+        const tags = params.value.split(',').filter((tag: string) => tag.trim());
+        return (
+          <div className="flex flex-wrap gap-1">
+            {tags.slice(0, 2).map((tag: string, index: number) => (
+              <span
+                key={index}
+                className="inline-flex rounded bg-blue-50 px-2 py-0.5 text-xs text-blue-700 dark:bg-blue-900 dark:text-blue-200"
+              >
+                {tag.trim()}
+              </span>
+            ))}
+            {tags.length > 2 && (
+              <span className="text-xs text-gray-500">+{tags.length - 2}</span>
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      field: 'startDate',
+      headerName: 'Start Date',
+      width: 120,
+      renderCell: (params) => params.value ? new Date(params.value).toLocaleDateString() : '-',
+    },
+    {
+      field: 'dueDate',
+      headerName: 'Due Date',
+      width: 120,
+      renderCell: (params) => params.value ? new Date(params.value).toLocaleDateString() : '-',
+    },
     {
       field: 'author',
       headerName: 'Author',
-      width: 150,
-      renderCell: (params) => params.value?.username || 'Unknown',
+      width: 130,
+      renderCell: (params) => (
+        <div className="font-medium text-gray-700 dark:text-gray-300">
+          {params.value?.username || 'Unknown'}
+        </div>
+      ),
     },
     {
       field: 'assignee',
       headerName: 'Assignee',
-      width: 150,
-      renderCell: (params) => params.value?.username || 'Unassigned',
+      width: 130,
+      renderCell: (params) => (
+        <div className="font-medium text-gray-700 dark:text-gray-300">
+          {params.value?.username || '-'}
+        </div>
+      ),
     },
   ];
 
@@ -139,7 +223,7 @@ const TableView = ({ id, setIsModalNewTaskOpen }: Props) => {
   if (error || !tasks) return <div>An error occurred while fetching tasks</div>;
 
   return (
-    <div className="h-[540px] w-full px-4 pb-8 xl:px-6">
+    <div className="h-[650px] w-full px-4 pb-8 xl:px-6">
       <div className="pt-5">
         <Header
           name="Table"
@@ -158,7 +242,22 @@ const TableView = ({ id, setIsModalNewTaskOpen }: Props) => {
       <DataGrid
         rows={tasks || []}
         columns={columns(handleStatusChange)}
-        sx={dataGridSxStyles(isDarkMode)}
+        getRowHeight={() => 'auto'}
+        sx={{
+          ...dataGridSxStyles(isDarkMode),
+          '& .MuiDataGrid-cell': {
+            padding: '12px 8px',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          '& .MuiDataGrid-columnHeaders': {
+            backgroundColor: isDarkMode ? '#1f2937' : '#f9fafb',
+            borderBottom: `2px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+          },
+          '& .MuiDataGrid-row:hover': {
+            backgroundColor: isDarkMode ? '#1f2937' : '#f3f4f6',
+          },
+        }}
         className="!border-none"
       />
     </div>
