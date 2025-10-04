@@ -141,6 +141,70 @@ const columns: GridColDef[] = [
       );
     },
   },
+  {
+    field: 'startDate',
+    headerName: 'Start Date',
+    width: 120,
+    resizable: true,
+    renderHeader: () => (
+      <span className="font-semibold text-gray-800 dark:text-gray-100">
+        Start Date
+      </span>
+    ),
+    renderCell: (params) => (
+      <span className="text-gray-700 dark:text-gray-100">
+        {params.value ? new Date(params.value).toLocaleDateString() : '-'}
+      </span>
+    ),
+  },
+  {
+    field: 'dueDate',
+    headerName: 'Due Date',
+    width: 120,
+    resizable: true,
+    renderHeader: () => (
+      <span className="font-semibold text-gray-800 dark:text-gray-100">
+        Due Date
+      </span>
+    ),
+    renderCell: (params) => (
+      <span className="text-gray-700 dark:text-gray-100">
+        {params.value ? new Date(params.value).toLocaleDateString() : '-'}
+      </span>
+    ),
+  },
+  {
+    field: 'author',
+    headerName: 'Author',
+    width: 130,
+    resizable: true,
+    renderHeader: () => (
+      <span className="font-semibold text-gray-800 dark:text-gray-100">
+        Author
+      </span>
+    ),
+    renderCell: (params) => (
+      <div className="font-medium text-gray-800 dark:text-white">
+        {params.value?.username || 'Unknown'}
+      </div>
+    ),
+  },
+  {
+    field: 'assignee',
+    headerName: 'Assignee',
+    width: 130,
+    resizable: true,
+    renderHeader: () => (
+      <span className="font-semibold text-gray-800 dark:text-gray-100">
+        Assignee
+      </span>
+    ),
+    renderCell: (params) => (
+      <div className="font-medium text-gray-800 dark:text-white">
+        {params.value?.username || '-'}
+      </div>
+    ),
+  },
 ];
 
 const ReusablePriorityPage = ({ priority }: Props) => {
