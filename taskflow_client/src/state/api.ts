@@ -30,6 +30,10 @@ export interface User {
   profilePictureUrl?: string;
   cognitoId?: string;
   teamId?: number;
+  team?: {
+    id: number;
+    teamname: string;
+  };
 }
 
 export interface Team {
@@ -88,6 +92,19 @@ interface CreateProjectArgs {
   description?: string;
   startDate?: string;
   endDate?: string;
+}
+
+interface CreateUserArgs {
+  username: string;
+  email: string;
+  cognitoId: string;
+  profilePictureUrl?: string;
+  teamId?: number;
+}
+
+interface CreateTeamArgs {
+  teamname: string;
+  productOwnerUserId?: number;
 }
 
 export const api = createApi({
@@ -159,6 +176,22 @@ export const api = createApi({
       query: () => 'teams',
       providesTags: ['Teams'],
     }),
+    createUser: build.mutation<User, CreateUserArgs>({
+      query: (newUser) => ({
+        url: 'users',
+        method: 'POST',
+        body: newUser,
+      }),
+      invalidatesTags: ['Users'],
+    }),
+    createTeam: build.mutation<Team, CreateTeamArgs>({
+      query: (newTeam) => ({
+        url: 'teams',
+        method: 'POST',
+        body: newTeam,
+      }),
+      invalidatesTags: ['Teams'],
+    }),
     search: build.query<SearchResults, string>({
       query: (query) => `search?query=${query}`,
     }),
@@ -173,5 +206,7 @@ export const {
   useUpdateTaskStatusMutation,
   useSearchQuery,
   useGetUsersQuery,
+  useCreateUserMutation,
   useGetTeamsQuery,
+  useCreateTeamMutation,
 } = api;

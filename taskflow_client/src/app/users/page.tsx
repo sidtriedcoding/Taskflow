@@ -1,12 +1,14 @@
 'use client';
 
 import { useGetUsersQuery } from '@/state/api';
-import React from 'react';
-import { Filter, Download } from 'lucide-react';
+import React, { useState } from 'react';
+import { Filter, Download, Plus } from 'lucide-react';
 import Image from 'next/image';
+import ModalNewUser from '@/components/ModalNewUser';
 
 const Users = () => {
   const { data: users, isLoading, isError } = useGetUsersQuery();
+  const [isModalNewUserOpen, setIsModalNewUserOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -26,7 +28,21 @@ const Users = () => {
 
   return (
     <div className="flex h-full w-full flex-col bg-gray-50 p-6 dark:bg-gray-900">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900 dark:text-white">Users</h1>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Users</h1>
+        <button
+          onClick={() => setIsModalNewUserOpen(true)}
+          className="flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+        >
+          <Plus className="h-4 w-4" />
+          New User
+        </button>
+      </div>
+
+      <ModalNewUser
+        isOpen={isModalNewUserOpen}
+        onClose={() => setIsModalNewUserOpen(false)}
+      />
 
       <div className="rounded-lg bg-white shadow-sm dark:bg-gray-800">
         {/* Header with Filters and Export */}
@@ -48,8 +64,9 @@ const Users = () => {
               <tr className="border-b border-gray-200 text-left dark:border-gray-700">
                 <th className="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-gray-300">ID</th>
                 <th className="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-gray-300">Username</th>
+                <th className="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-gray-300">Email</th>
                 <th className="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-gray-300">Profile Picture</th>
-                <th className="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-gray-300">Team ID</th>
+                <th className="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-gray-300">Team</th>
               </tr>
             </thead>
             <tbody>
@@ -63,6 +80,9 @@ const Users = () => {
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
                     {user.username}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+                    {user.email}
                   </td>
                   <td className="px-6 py-4">
                     <div className="relative h-8 w-8">
@@ -85,7 +105,7 @@ const Users = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
-                    {user.teamId}
+                    {user.team?.teamname || 'No team'}
                   </td>
                 </tr>
               ))}

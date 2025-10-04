@@ -10,7 +10,16 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
     // the specific fields in the previous `select` statement. If the server
     // still crashes, the problem is likely with the database connection
     // or the Prisma Client setup itself.
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      include: {
+        team: {
+          select: {
+            id: true,
+            teamname: true,
+          },
+        },
+      },
+    });
 
     res.json(users);
   } catch (error: any) {
@@ -23,6 +32,65 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
       error: error.message,
       // Adding the error code can help identify Prisma-specific issues
       code: error.code,
+    });
+  }
+};
+
+export const createUser = async (req: Request, res: Response): Promise<void> => {
+  const { username, email, cognitoId, profilePictureUrl, teamId } = req.body;
+
+  try {
+    // Validate required fields
+    if (!username || !email || !cognitoId) {
+      res.status(400).json({
+        message: "Missing required fields. Required: username, email, cognitoId",
+      });
+      return;
+    }
+
+    // Check if user already exists
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { username },
+          { email },
+          { cognitoId },
+        ],
+      },
+    });
+
+    if (existingUser) {
+      res.status(409).json({
+        message: "User already exists with this username, email, or cognitoId",
+      });
+      return;
+    }
+
+    // Create new user
+    const newUser = await prisma.user.create({
+      data: {
+        username,
+        email,
+        cognitoId,
+        profilePictureUrl: profilePictureUrl || null,
+        teamId: teamId ? Number(teamId) : null,
+      },
+      include: {
+        team: {
+          select: {
+            id: true,
+            teamname: true,
+          },
+        },
+      },
+    });
+
+    res.status(201).json(newUser);
+  } catch (error: any) {
+    console.error("Failed to create user:", error);
+    res.status(500).json({
+      message: "Error creating user.",
+      error: error.message,
     });
   }
 };
