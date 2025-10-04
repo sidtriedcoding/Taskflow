@@ -13,4 +13,15 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 // Export the API hooks
-export { useGetProjectsQuery, useCreateProjectMutation } from './api';
+export {
+    useGetProjectsQuery,
+    useCreateProjectMutation,
+    useGetTasksQuery,
+    useCreateTaskMutation,
+    useUpdateTaskStatusMutation,
+    useSearchQuery,
+    useGetUsersQuery,
+    useCreateUserMutation,
+    useGetTeamsQuery,
+    useCreateTeamMutation,
+} from './api';
