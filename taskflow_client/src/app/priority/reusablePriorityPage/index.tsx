@@ -17,7 +17,7 @@ const columns: GridColDef[] = [
   {
     field: 'title',
     headerName: 'Title',
-    width: 200,
+    width: 150,
     flex: 1,
     resizable: true,
     renderHeader: () => (
@@ -34,8 +34,8 @@ const columns: GridColDef[] = [
   {
     field: 'description',
     headerName: 'Description',
-    width: 400,
-    flex: 3,
+    width: 300,
+    flex: 2,
     resizable: true,
     renderHeader: () => (
       <span className="font-semibold text-gray-800 dark:text-gray-100">
@@ -51,7 +51,7 @@ const columns: GridColDef[] = [
   {
     field: 'status',
     headerName: 'Status',
-    width: 160,
+    width: 140,
     resizable: true,
     renderHeader: () => (
       <span className="font-semibold text-gray-800 dark:text-gray-100">
@@ -83,7 +83,7 @@ const columns: GridColDef[] = [
   {
     field: 'priority',
     headerName: 'Priority',
-    width: 130,
+    width: 120,
     resizable: true,
     renderHeader: () => (
       <span className="font-semibold text-gray-800 dark:text-gray-100">
@@ -114,7 +114,7 @@ const columns: GridColDef[] = [
   {
     field: 'tags',
     headerName: 'Tags',
-    width: 180,
+    width: 150,
     resizable: true,
     renderHeader: () => (
       <span className="font-semibold text-gray-800 dark:text-gray-100">
@@ -140,70 +140,6 @@ const columns: GridColDef[] = [
         </div>
       );
     },
-  },
-  {
-    field: 'startDate',
-    headerName: 'Start Date',
-    width: 130,
-    resizable: true,
-    renderHeader: () => (
-      <span className="font-semibold text-gray-800 dark:text-gray-100">
-        Start Date
-      </span>
-    ),
-    renderCell: (params) => (
-      <span className="text-gray-700 dark:text-gray-100">
-        {params.value ? new Date(params.value).toLocaleDateString() : '-'}
-      </span>
-    ),
-  },
-  {
-    field: 'dueDate',
-    headerName: 'Due Date',
-    width: 130,
-    resizable: true,
-    renderHeader: () => (
-      <span className="font-semibold text-gray-800 dark:text-gray-100">
-        Due Date
-      </span>
-    ),
-    renderCell: (params) => (
-      <span className="text-gray-700 dark:text-gray-100">
-        {params.value ? new Date(params.value).toLocaleDateString() : '-'}
-      </span>
-    ),
-  },
-  {
-    field: 'author',
-    headerName: 'Author',
-    width: 150,
-    resizable: true,
-    renderHeader: () => (
-      <span className="font-semibold text-gray-800 dark:text-gray-100">
-        Author
-      </span>
-    ),
-    renderCell: (params) => (
-      <div className="font-medium text-gray-800 dark:text-white">
-        {params.value?.username || 'Unknown'}
-      </div>
-    ),
-  },
-  {
-    field: 'assignee',
-    headerName: 'Assignee',
-    width: 150,
-    resizable: true,
-    renderHeader: () => (
-      <span className="font-semibold text-gray-800 dark:text-gray-100">
-        Assignee
-      </span>
-    ),
-    renderCell: (params) => (
-      <div className="font-medium text-gray-800 dark:text-white">
-        {params.value?.username || '-'}
-      </div>
-    ),
   },
 ];
 
@@ -301,26 +237,24 @@ const ReusablePriorityPage = ({ priority }: Props) => {
               width: '100%',
               height: '100%',
               '& .MuiDataGrid-cell': {
-                padding: '12px 8px',
+                padding: '16px 12px',
                 display: 'flex',
                 alignItems: 'center',
                 color: isDarkMode ? '#f3f4f6' : '#111827',
                 borderBottom: isDarkMode
                   ? '1px solid #374151'
                   : '1px solid #e5e7eb',
-                borderRight: isDarkMode
-                  ? '1px solid #374151'
-                  : '1px solid #e5e7eb',
+                borderRight: 'none',
               },
               '& .MuiDataGrid-columnHeaders': {
-                backgroundColor: isDarkMode ? '#111827' : '#f9fafb',
+                backgroundColor: isDarkMode ? '#111827' : '#f8fafc',
                 borderBottom: `2px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
+                padding: '12px',
               },
               '& .MuiDataGrid-columnHeader': {
                 color: isDarkMode ? '#f3f4f6' : '#111827',
-                borderRight: isDarkMode
-                  ? '1px solid #374151'
-                  : '1px solid #e5e7eb',
+                borderRight: 'none',
+                fontWeight: '600',
               },
               '& .MuiDataGrid-row': {
                 backgroundColor: isDarkMode ? '#1a1a1a' : '#ffffff',
@@ -335,7 +269,7 @@ const ReusablePriorityPage = ({ priority }: Props) => {
                 backgroundColor: isDarkMode ? '#262626 !important' : '#f3f4f6 !important',
               },
               '& .MuiDataGrid-footerContainer': {
-                backgroundColor: isDarkMode ? '#111827' : '#f9fafb',
+                backgroundColor: isDarkMode ? '#111827' : '#f8fafc',
                 borderTop: `2px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
                 color: isDarkMode ? '#f3f4f6' : '#111827',
               },
