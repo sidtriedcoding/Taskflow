@@ -1,7 +1,7 @@
 import Header from '@/components/Header';
 import { useAppSelector } from '@/app/hooks';
 import { dataGridSxStyles } from '@/lib/utils';
-import { useGetTasksQuery } from '@/state/api';
+import { useGetTasksQuery, useUpdateTaskStatusMutation, Status } from '@/state/api';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import React from 'react';
 
@@ -49,38 +49,73 @@ const StatusPill = ({ status }: { status: string | null | undefined }) => {
   );
 };
 
-const columns: GridColDef[] = [
-  { field: 'title', headerName: 'Title', flex: 1, minWidth: 150 },
-  { field: 'description', headerName: 'Description', flex: 1, minWidth: 200 },
-  {
-    field: 'status',
-    headerName: 'Status',
-    width: 150,
-    renderCell: (params) => <StatusPill status={params.value} />,
-  },
-  { field: 'priority', headerName: 'Priority', width: 100 },
-  { field: 'tags', headerName: 'Tags', width: 130 },
-  { field: 'startDate', headerName: 'Start Date', width: 130 },
-  { field: 'dueDate', headerName: 'Due Date', width: 130 },
-  {
-    field: 'author',
-    headerName: 'Author',
-    width: 150,
-    // --- FIX START ---
-    // The author object is the value, so we access its 'username' property.
-    renderCell: (params) => params.value?.username || 'Unknown',
-    // --- FIX END ---
-  },
-  {
-    field: 'assignee',
-    headerName: 'Assignee',
-    width: 150,
-    // --- FIX START ---
-    // The assignee object is the value, so we access its 'username' property.
-    renderCell: (params) => params.value?.username || 'Unassigned',
-    // --- FIX END ---
-  },
-];
+const StatusDropdown = ({
+  taskId,
+  currentStatus,
+  onStatusChange
+}: {
+  taskId: number;
+  currentStatus: string | null | undefined;
+  onStatusChange: (taskId: number, status: Status) => void;
+}) => {
+  const statuses: Status[] = [
+    Status.ToDo,
+    Status.WorkInProgress,
+    Status.UnderReview,
+    Status.Completed,
+  ];
+
+  return (
+    <select
+      value={currentStatus || ''}
+      onChange={(e) => onStatusChange(taskId, e.target.value as Status)}
+      className="rounded border border-gray-300 bg-white px-2 py-1 text-xs dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {!currentStatus && <option value="">Select Status</option>}
+      {statuses.map((status) => (
+        <option key={status} value={status}>
+          {status}
+        </option>
+      ))}
+    </select>
+  );
+};
+
+const columns = (
+  onStatusChange: (taskId: number, status: Status) => void
+): GridColDef[] => [
+    { field: 'title', headerName: 'Title', flex: 1, minWidth: 150 },
+    { field: 'description', headerName: 'Description', flex: 1, minWidth: 200 },
+    {
+      field: 'status',
+      headerName: 'Status',
+      width: 180,
+      renderCell: (params) => (
+        <StatusDropdown
+          taskId={params.row.id}
+          currentStatus={params.value}
+          onStatusChange={onStatusChange}
+        />
+      ),
+    },
+    { field: 'priority', headerName: 'Priority', width: 100 },
+    { field: 'tags', headerName: 'Tags', width: 130 },
+    { field: 'startDate', headerName: 'Start Date', width: 130 },
+    { field: 'dueDate', headerName: 'Due Date', width: 130 },
+    {
+      field: 'author',
+      headerName: 'Author',
+      width: 150,
+      renderCell: (params) => params.value?.username || 'Unknown',
+    },
+    {
+      field: 'assignee',
+      headerName: 'Assignee',
+      width: 150,
+      renderCell: (params) => params.value?.username || 'Unassigned',
+    },
+  ];
 
 const TableView = ({ id, setIsModalNewTaskOpen }: Props) => {
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
@@ -89,6 +124,16 @@ const TableView = ({ id, setIsModalNewTaskOpen }: Props) => {
     error,
     isLoading,
   } = useGetTasksQuery({ projectId: Number(id) });
+
+  const [updateTaskStatus] = useUpdateTaskStatusMutation();
+
+  const handleStatusChange = async (taskId: number, status: Status) => {
+    try {
+      await updateTaskStatus({ taskId, status }).unwrap();
+    } catch (error) {
+      console.error('Failed to update task status:', error);
+    }
+  };
 
   if (isLoading) return <div>Loading...</div>;
   if (error || !tasks) return <div>An error occurred while fetching tasks</div>;
@@ -112,7 +157,7 @@ const TableView = ({ id, setIsModalNewTaskOpen }: Props) => {
 
       <DataGrid
         rows={tasks || []}
-        columns={columns}
+        columns={columns(handleStatusChange)}
         sx={dataGridSxStyles(isDarkMode)}
         className="!border-none"
       />

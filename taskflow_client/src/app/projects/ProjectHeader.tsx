@@ -14,9 +14,10 @@ import ModalNewProject from "./ModalNewProject";
 type Props = {
   activeTab: string;
   setActiveTab: (tabName: string) => void;
+  setIsModalNewTaskOpen?: (isOpen: boolean) => void;
 };
 
-const ProjectHeader = ({ activeTab, setActiveTab }: Props) => {
+const ProjectHeader = ({ activeTab, setActiveTab, setIsModalNewTaskOpen }: Props) => {
   const [isModalNewProjectOpen, setIsModalNewProjectOpen] = useState(false);
 
   return (
@@ -29,12 +30,22 @@ const ProjectHeader = ({ activeTab, setActiveTab }: Props) => {
         <Header
           name="Product Design Dev"
           buttonComponent={
-            <button
-              className="flex items-center rounded-md bg-blue-primary px-3 py-2 text-white hover:bg-blue-600"
-              onClick={() => setIsModalNewProjectOpen(true)}
-            >
-              <PlusSquare className="mr-2 h-5 w-5" /> New Boards
-            </button>
+            <div className="flex gap-2">
+              {setIsModalNewTaskOpen && (
+                <button
+                  className="flex items-center rounded-md bg-green-600 px-3 py-2 text-white hover:bg-green-700"
+                  onClick={() => setIsModalNewTaskOpen(true)}
+                >
+                  <PlusSquare className="mr-2 h-5 w-5" /> New Task
+                </button>
+              )}
+              <button
+                className="flex items-center rounded-md bg-blue-primary px-3 py-2 text-white hover:bg-blue-600"
+                onClick={() => setIsModalNewProjectOpen(true)}
+              >
+                <PlusSquare className="mr-2 h-5 w-5" /> New Boards
+              </button>
+            </div>
           }
         />
       </div>
