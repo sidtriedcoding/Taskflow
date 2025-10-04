@@ -115,7 +115,7 @@ const columns = (
         </span>
       ),
       renderCell: (params) => (
-        <div className="font-medium text-gray-900 dark:text-gray-100" title={params.value}>
+        <div className="font-medium text-gray-900 dark:text-white" title={params.value}>
           {params.value}
         </div>
       ),
@@ -132,7 +132,7 @@ const columns = (
         </span>
       ),
       renderCell: (params) => (
-        <div className="truncate text-gray-700 dark:text-gray-200" title={params.value}>
+        <div className="truncate text-gray-700 dark:text-gray-100" title={params.value}>
           {params.value || '-'}
         </div>
       ),
@@ -208,7 +208,7 @@ const columns = (
         </span>
       ),
       renderCell: (params) => (
-        <span className="text-gray-700 dark:text-gray-200">
+        <span className="text-gray-700 dark:text-gray-100">
           {params.value ? new Date(params.value).toLocaleDateString() : '-'}
         </span>
       ),
@@ -224,7 +224,7 @@ const columns = (
         </span>
       ),
       renderCell: (params) => (
-        <span className="text-gray-700 dark:text-gray-200">
+        <span className="text-gray-700 dark:text-gray-100">
           {params.value ? new Date(params.value).toLocaleDateString() : '-'}
         </span>
       ),
@@ -240,7 +240,7 @@ const columns = (
         </span>
       ),
       renderCell: (params) => (
-        <div className="font-medium text-gray-800 dark:text-gray-100">
+        <div className="font-medium text-gray-800 dark:text-white">
           {params.value?.username || 'Unknown'}
         </div>
       ),
@@ -256,7 +256,7 @@ const columns = (
         </span>
       ),
       renderCell: (params) => (
-        <div className="font-medium text-gray-800 dark:text-gray-100">
+        <div className="font-medium text-gray-800 dark:text-white">
           {params.value?.username || '-'}
         </div>
       ),
