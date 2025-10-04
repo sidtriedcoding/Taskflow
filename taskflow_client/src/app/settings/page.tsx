@@ -1,7 +1,7 @@
 
 'use client';
 import Header from "@/components/Header";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   User,
   Users,
@@ -22,6 +22,7 @@ const Settings = () => {
   const [activeTab, setActiveTab] = useState('profile');
   const [isEditing, setIsEditing] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [userSettings, setUserSettings] = useState({
     username: "johndoe",
@@ -84,13 +85,59 @@ const Settings = () => {
   };
 
   const handleExport = () => {
-    // TODO: Implement export functionality
-    console.log('Exporting settings...');
+    const settingsData = {
+      userSettings,
+      teamSettings,
+      projectSettings,
+      exportDate: new Date().toISOString(),
+      version: '1.0'
+    };
+
+    const jsonContent = JSON.stringify(settingsData, null, 2);
+    const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `taskflow_settings_${new Date().toISOString().split('T')[0]}.json`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const handleImport = () => {
-    // TODO: Implement import functionality
-    console.log('Importing settings...');
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string;
+        const importedSettings = JSON.parse(content);
+
+        // Validate the imported settings structure
+        if (importedSettings.userSettings) {
+          setUserSettings(importedSettings.userSettings);
+        }
+        if (importedSettings.teamSettings) {
+          setTeamSettings(importedSettings.teamSettings);
+        }
+        if (importedSettings.projectSettings) {
+          setProjectSettings(importedSettings.projectSettings);
+        }
+
+        alert('Settings imported successfully!');
+        console.log('Imported settings:', importedSettings);
+      } catch (error) {
+        console.error('Error parsing settings file:', error);
+        alert('Error parsing settings file. Please check the format and try again.');
+      }
+    };
+    reader.readAsText(file);
   };
 
   const labelStyles = "block text-sm font-medium text-gray-700 dark:text-gray-300";
@@ -631,6 +678,15 @@ const Settings = () => {
           {renderTabContent()}
         </div>
       </div>
+
+      {/* Hidden file input for import */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".json"
+        onChange={handleFileChange}
+        style={{ display: 'none' }}
+      />
     </div>
   );
 };
