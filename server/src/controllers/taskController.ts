@@ -159,13 +159,29 @@ export const deleteTask = async (
   const { taskId } = req.params;
 
   try {
+    // First, delete all related records to avoid foreign key constraint violations
+    await prisma.taskAssignment.deleteMany({
+      where: { taskId: Number(taskId) },
+    });
+
+    await prisma.attachment.deleteMany({
+      where: { taskId: Number(taskId) },
+    });
+
+    await prisma.comment.deleteMany({
+      where: { taskId: Number(taskId) },
+    });
+
+    // Then delete the task itself
     await prisma.task.delete({
       where: {
         id: Number(taskId),
       },
     });
+
     res.json({ message: 'Task deleted successfully' });
   } catch (error: any) {
+    console.error('Delete task error:', error);
     res.status(500).json({ message: `Error deleting task: ${error.message}` });
   }
 };

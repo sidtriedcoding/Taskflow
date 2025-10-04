@@ -59,7 +59,8 @@ const TaskEditModal = ({ isOpen, onClose, task }: TaskEditModalProps) => {
             onClose();
         } catch (error: any) {
             console.error('Failed to update task:', error);
-            alert(`Failed to update task: ${error.data?.message || error.message || 'Unknown error'}`);
+            const errorMessage = error?.data?.message || error?.message || error?.error || 'Unknown error occurred';
+            alert(`Failed to update task: ${errorMessage}`);
         }
     };
 

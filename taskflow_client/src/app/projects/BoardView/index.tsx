@@ -1,6 +1,6 @@
-import { 
-  useGetTasksQuery, 
-  useUpdateTaskStatusMutation, 
+import {
+  useGetTasksQuery,
+  useUpdateTaskStatusMutation,
   useDeleteTaskMutation,
   useDuplicateTaskMutation,
   useUpdateTaskMutation
@@ -191,7 +191,8 @@ const Task = ({ task }: TaskProps) => {
         console.log('Task deleted successfully');
       } catch (error: any) {
         console.error('Failed to delete task:', error);
-        alert(`Failed to delete task: ${error.data?.message || error.message || 'Unknown error'}`);
+        const errorMessage = error?.data?.message || error?.message || error?.error || 'Unknown error occurred';
+        alert(`Failed to delete task: ${errorMessage}`);
       }
     }
   };
@@ -202,7 +203,8 @@ const Task = ({ task }: TaskProps) => {
       console.log('Task duplicated successfully');
     } catch (error: any) {
       console.error('Failed to duplicate task:', error);
-      alert(`Failed to duplicate task: ${error.data?.message || error.message || 'Unknown error'}`);
+      const errorMessage = error?.data?.message || error?.message || error?.error || 'Unknown error occurred';
+      alert(`Failed to duplicate task: ${errorMessage}`);
     }
   };
 
@@ -215,7 +217,8 @@ const Task = ({ task }: TaskProps) => {
       console.log('Task archived successfully');
     } catch (error: any) {
       console.error('Failed to archive task:', error);
-      alert(`Failed to archive task: ${error.data?.message || error.message || 'Unknown error'}`);
+      const errorMessage = error?.data?.message || error?.message || error?.error || 'Unknown error occurred';
+      alert(`Failed to archive task: ${errorMessage}`);
     }
   };
 
@@ -229,7 +232,8 @@ const Task = ({ task }: TaskProps) => {
       console.log('Task flagged successfully');
     } catch (error: any) {
       console.error('Failed to flag task:', error);
-      alert(`Failed to flag task: ${error.data?.message || error.message || 'Unknown error'}`);
+      const errorMessage = error?.data?.message || error?.message || error?.error || 'Unknown error occurred';
+      alert(`Failed to flag task: ${errorMessage}`);
     }
   };
 
