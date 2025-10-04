@@ -74,20 +74,20 @@ const Notifications = () => {
         }
     };
 
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case 'task_update':
-        return <ClipboardList className="h-5 w-5 text-blue-500" />;
-      case 'project_update':
-        return <FolderOpen className="h-5 w-5 text-green-500" />;
-      case 'comment':
-        return <MessageSquare className="h-5 w-5 text-purple-500" />;
-      case 'team_update':
-        return <Users className="h-5 w-5 text-orange-500" />;
-      default:
-        return <Bell className="h-5 w-5 text-gray-500" />;
-    }
-  };
+    const getNotificationIcon = (type: string) => {
+        switch (type) {
+            case 'task_update':
+                return <ClipboardList className="h-5 w-5 text-blue-500" />;
+            case 'project_update':
+                return <FolderOpen className="h-5 w-5 text-green-500" />;
+            case 'comment':
+                return <MessageSquare className="h-5 w-5 text-purple-500" />;
+            case 'team_update':
+                return <Users className="h-5 w-5 text-orange-500" />;
+            default:
+                return <Bell className="h-5 w-5 text-gray-500" />;
+        }
+    };
 
     const getNotificationTypeLabel = (type: string) => {
         switch (type) {

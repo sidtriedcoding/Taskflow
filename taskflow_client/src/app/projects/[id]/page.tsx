@@ -7,6 +7,7 @@ import List from '../ListView';
 import Timeline from '../TimelineView';
 import Table from '../TableView';
 import ModalNewTask from '@/components/ModalNewTask';
+import { useGetProjectQuery } from '@/state/api';
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -19,6 +20,17 @@ const Project = ({ params }: Props) => {
   const [activeTab, setActiveTab] = useState('Board');
   const [isModalNewTaskOpen, setIsModalNewTaskOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Fetch project data
+  const { data: project, isLoading, error } = useGetProjectQuery({ id });
+
+  if (isLoading) {
+    return <div className="p-6">Loading project...</div>;
+  }
+
+  if (error) {
+    return <div className="p-6 text-red-500">Error loading project</div>;
+  }
 
   return (
     <div>
@@ -33,6 +45,7 @@ const Project = ({ params }: Props) => {
         setIsModalNewTaskOpen={setIsModalNewTaskOpen}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
+        projectName={project?.teamname}
       />
       {activeTab === 'Board' && (
         <Board id={id} setIsModalNewTaskOpen={setIsModalNewTaskOpen} searchTerm={searchTerm} />

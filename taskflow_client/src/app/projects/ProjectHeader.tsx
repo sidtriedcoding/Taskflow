@@ -17,9 +17,10 @@ type Props = {
   setIsModalNewTaskOpen?: (isOpen: boolean) => void;
   searchTerm: string;
   setSearchTerm: (term: string) => void;
+  projectName?: string;
 };
 
-const ProjectHeader = ({ activeTab, setActiveTab, setIsModalNewTaskOpen, searchTerm, setSearchTerm }: Props) => {
+const ProjectHeader = ({ activeTab, setActiveTab, setIsModalNewTaskOpen, searchTerm, setSearchTerm, projectName }: Props) => {
   const [isModalNewProjectOpen, setIsModalNewProjectOpen] = useState(false);
 
   return (
@@ -30,7 +31,7 @@ const ProjectHeader = ({ activeTab, setActiveTab, setIsModalNewTaskOpen, searchT
       />
       <div className="pb-6 pt-6 lg:pb-4 lg:pt-8">
         <Header
-          name="Product Design Dev"
+          name={projectName || "Loading..."}
           buttonComponent={
             <div className="flex gap-2">
               {setIsModalNewTaskOpen && (

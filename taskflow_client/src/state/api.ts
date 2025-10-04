@@ -66,6 +66,7 @@ export interface Comment {
   text: string;
   taskId: number;
   userId: number;
+  createdAt?: string;
   user?: User;
   task?: Task;
 }
@@ -78,13 +79,6 @@ export interface Attachment {
   uploadedById: number;
 }
 
-export interface Comment {
-  id: number;
-  text: string;
-  taskId: number;
-  userId: number;
-  user?: User;
-}
 
 export interface Task {
   comments: Comment[];
@@ -154,6 +148,11 @@ export const api = createApi({
       transformErrorResponse: (response: { status: number; data: unknown }) => {
         return response;
       },
+    }),
+
+    getProject: build.query<Project, { id: string }>({
+      query: ({ id }) => `projects/${id}`,
+      providesTags: (result, error, { id }) => [{ type: 'Projects', id }],
     }),
 
     createProject: build.mutation<Project, CreateProjectArgs>({
@@ -299,6 +298,7 @@ export const api = createApi({
 
 export const {
   useGetProjectsQuery,
+  useGetProjectQuery,
   useCreateProjectMutation,
   useGetTasksQuery,
   useCreateTaskMutation,
