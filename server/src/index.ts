@@ -17,18 +17,10 @@ dotenv.config();
 const app = express();
 
 // 1. Enable CORS for all requests
-const allowedOrigins = [
-  "http://localhost:3000",
-  "http://localhost:3001", // Added port 3001 for when port 3000 is busy
-  "https://localhost:3000",
-  "https://localhost:3001",
-  "https://main.dmygjitgxhqne.amplifyapp.com", // AWS Amplify deployment URL
-  process.env.CLIENT_URL,
-].filter(Boolean) as string[];
-
+// Allow all origins since API Gateway controls access
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: true,
     credentials: true,
   })
 );
