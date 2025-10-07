@@ -22,8 +22,8 @@ const allowedOrigins = [
   "http://localhost:3001", // Added port 3001 for when port 3000 is busy
   "https://localhost:3000",
   "https://localhost:3001",
+  "https://main.dmygjitgxhqne.amplifyapp.com", // AWS Amplify deployment URL
   process.env.CLIENT_URL,
-  // Add your deployed client URL here
 ].filter(Boolean) as string[];
 
 app.use(
