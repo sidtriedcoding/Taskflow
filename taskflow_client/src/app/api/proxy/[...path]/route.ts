@@ -2,10 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const BACKEND_URL = process.env.BACKEND_API_URL || 'http://54.89.189.70/api';
 
+type RouteContext = {
+  params: Promise<{ path: string[] }>;
+};
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  context: RouteContext
 ) {
+  const params = await context.params;
   const path = params.path.join('/');
   const searchParams = request.nextUrl.searchParams.toString();
   const url = `${BACKEND_URL}/${path}${searchParams ? `?${searchParams}` : ''}`;
@@ -32,8 +37,9 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  context: RouteContext
 ) {
+  const params = await context.params;
   const path = params.path.join('/');
   const url = `${BACKEND_URL}/${path}`;
 
@@ -60,8 +66,9 @@ export async function POST(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  context: RouteContext
 ) {
+  const params = await context.params;
   const path = params.path.join('/');
   const url = `${BACKEND_URL}/${path}`;
 
@@ -88,8 +95,9 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  context: RouteContext
 ) {
+  const params = await context.params;
   const path = params.path.join('/');
   const url = `${BACKEND_URL}/${path}`;
 
