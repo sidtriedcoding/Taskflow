@@ -25,12 +25,29 @@ const Project = ({ params }: Props) => {
   const { data: projects, isLoading, error } = useGetProjectsQuery();
   const project = projects?.find((p) => p.id === Number(id));
 
+  console.log('Project page - ID:', id);
+  console.log('Project page - Projects:', projects);
+  console.log('Project page - Found project:', project);
+  console.log('Project page - Error:', error);
+
   if (isLoading) {
     return <div className="p-6">Loading project...</div>;
   }
 
-  if (error || !project) {
-    return <div className="p-6 text-red-500">Error loading project</div>;
+  if (error) {
+    return (
+      <div className="p-6 text-red-500">
+        Error loading projects: {JSON.stringify(error)}
+      </div>
+    );
+  }
+
+  if (!project) {
+    return (
+      <div className="p-6 text-red-500">
+        Project with ID {id} not found. Available projects: {projects?.map(p => p.id).join(', ')}
+      </div>
+    );
   }
 
   return (
