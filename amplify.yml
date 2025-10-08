@@ -10,19 +10,13 @@ applications:
           commands:
             - npm run build
       artifacts:
-        baseDirectory: .next/standalone
+        baseDirectory: .next
         files:
           - '**/*'
       cache:
         paths:
           - node_modules/**/*
           - .next/cache/**/*
-    backend:
-      phases:
-        build:
-          commands:
-            - echo "No backend build required"
     environment:
       variables:
         BACKEND_API_URL: http://54.89.189.70/api
-        _LIVE_UPDATES: '[{"pkg":"next-version","type":"internal","version":"latest"}]'

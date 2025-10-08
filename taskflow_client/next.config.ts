@@ -6,7 +6,6 @@ const nextConfig: NextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
-  output: 'standalone',
   env: {
     NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:80/api',
     BACKEND_API_URL: process.env.BACKEND_API_URL || 'http://54.89.189.70/api',
