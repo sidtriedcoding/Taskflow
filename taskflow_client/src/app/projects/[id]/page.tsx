@@ -7,7 +7,7 @@ import List from '../ListView';
 import Timeline from '../TimelineView';
 import Table from '../TableView';
 import ModalNewTask from '@/components/ModalNewTask';
-import { useGetProjectQuery } from '@/state/api';
+import { useGetProjectsQuery } from '@/state/api';
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -21,14 +21,15 @@ const Project = ({ params }: Props) => {
   const [isModalNewTaskOpen, setIsModalNewTaskOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Fetch project data
-  const { data: project, isLoading, error } = useGetProjectQuery({ id });
+  // Fetch all projects and filter by ID (workaround for backend route issue)
+  const { data: projects, isLoading, error } = useGetProjectsQuery();
+  const project = projects?.find((p) => p.id === Number(id));
 
   if (isLoading) {
     return <div className="p-6">Loading project...</div>;
   }
 
-  if (error) {
+  if (error || !project) {
     return <div className="p-6 text-red-500">Error loading project</div>;
   }
 
