@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Use EC2 backend which is working correctly
 const BACKEND_URL = process.env.BACKEND_API_URL || 'http://54.89.189.70/api';
 
 type RouteContext = {

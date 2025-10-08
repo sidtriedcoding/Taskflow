@@ -20,4 +20,4 @@ applications:
     environment:
       variables:
         NEXT_PUBLIC_API_BASE_URL: /api/proxy
-        BACKEND_API_URL: https://12g63ihcb3-execute-api.us-east-1.amazonaws.com/prod
+        BACKEND_API_URL: http://54.89.189.70/api
