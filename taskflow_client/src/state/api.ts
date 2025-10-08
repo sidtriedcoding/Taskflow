@@ -128,7 +128,7 @@ interface CreateTeamArgs {
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || '/api/proxy',
+    baseUrl: '/api/proxy',
     prepareHeaders: (headers) => {
       headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
       headers.set('Pragma', 'no-cache');
