@@ -10,7 +10,7 @@ applications:
           commands:
             - npm run build
       artifacts:
-        baseDirectory: .next
+        baseDirectory: .next/standalone
         files:
           - '**/*'
       cache:
@@ -25,3 +25,4 @@ applications:
     environment:
       variables:
         BACKEND_API_URL: http://54.89.189.70/api
+        _LIVE_UPDATES: '[{"pkg":"next-version","type":"internal","version":"latest"}]'
