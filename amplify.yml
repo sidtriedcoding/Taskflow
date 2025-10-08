@@ -22,3 +22,6 @@ applications:
         build:
           commands:
             - echo "No backend build required"
+    environment:
+      variables:
+        NEXT_PUBLIC_API_BASE_URL: http://54.89.189.70/api
