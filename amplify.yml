@@ -19,4 +19,5 @@ applications:
           - .next/cache/**/*
     environment:
       variables:
+        NEXT_PUBLIC_API_BASE_URL: /api/proxy
         BACKEND_API_URL: https://12g63ihcb3-execute-api.us-east-1.amazonaws.com/prod
