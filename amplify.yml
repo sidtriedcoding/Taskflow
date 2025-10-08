@@ -19,4 +19,4 @@ applications:
           - .next/cache/**/*
     environment:
       variables:
-        BACKEND_API_URL: http://54.89.189.70/api
+        BACKEND_API_URL: https://12g63ihcb3-execute-api.us-east-1.amazonaws.com/prod
