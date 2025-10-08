@@ -41,14 +41,18 @@ const Notifications = () => {
     const [markAllAsRead] = useMarkAllAsReadMutation();
     const [deleteNotification] = useDeleteNotificationMutation();
 
+    // Handle error gracefully by treating as empty notifications
+    const safeNotifications = notifications || [];
+    const safeUnreadCount = unreadCount || { count: 0 };
+
     // Filter notifications based on current filters
-    const filteredNotifications = notifications ? notifications.filter(notification => {
+    const filteredNotifications = safeNotifications.filter(notification => {
         const matchesType = !typeFilter || notification.type === typeFilter;
         const matchesRead = readFilter === '' ||
             (readFilter === 'read' && notification.isRead) ||
             (readFilter === 'unread' && !notification.isRead);
         return matchesType && matchesRead;
-    }) : [];
+    });
 
     const handleMarkAsRead = async (notificationId: number) => {
         try {
@@ -112,23 +116,15 @@ const Notifications = () => {
         );
     }
 
-    if (isError || !notifications) {
-        return (
-            <div className="flex h-full w-full items-center justify-center">
-                <div className="text-lg text-red-500">Error loading notifications</div>
-            </div>
-        );
-    }
-
     return (
         <div className="flex h-full w-full flex-col bg-gray-50 p-6 dark:bg-gray-900">
             {/* Header */}
             <div className="mb-6 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Notifications</h1>
-                    {unreadCount && unreadCount.count > 0 && (
+                    {safeUnreadCount.count > 0 && (
                         <span className="rounded-full bg-red-500 px-2 py-1 text-xs font-semibold text-white">
-                            {unreadCount.count}
+                            {safeUnreadCount.count}
                         </span>
                     )}
                 </div>
@@ -143,7 +139,7 @@ const Notifications = () => {
                         <Filter size={16} />
                         <span>FILTERS</span>
                     </button>
-                    {unreadCount && unreadCount.count > 0 && (
+                    {safeUnreadCount.count > 0 && (
                         <button
                             onClick={handleMarkAllAsRead}
                             className="flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
@@ -294,11 +290,11 @@ const Notifications = () => {
             {/* Footer */}
             <div className="mt-4 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
                 <span>
-                    Showing {filteredNotifications.length} of {notifications.length} notifications
+                    Showing {filteredNotifications.length} of {safeNotifications.length} notifications
                 </span>
-                {unreadCount && unreadCount.count > 0 && (
+                {safeUnreadCount.count > 0 && (
                     <span className="text-blue-600 dark:text-blue-400">
-                        {unreadCount.count} unread
+                        {safeUnreadCount.count} unread
                     </span>
                 )}
             </div>
